@@ -157,11 +157,13 @@ export const useUIStore = create<UIStore>()(
 )
 
 // Export selectors for convenience
-export const selectCurrentView = (state: UIStore) => state.currentView
-export const selectSidebarCollapsed = (state: UIStore) => state.sidebarCollapsed
-export const selectQueueVisible = (state: UIStore) => state.queueVisible
-export const selectTheme = (state: UIStore) => state.theme
-export const selectCreatePlaylistDialogOpen = (state: UIStore) => state.createPlaylistDialogOpen
-export const selectAddFolderDialogOpen = (state: UIStore) => state.addFolderDialogOpen
-export const selectContextMenuPosition = (state: UIStore) => state.contextMenuPosition
-export const selectContextMenuData = (state: UIStore) => state.contextMenuData
+export const selectCurrentView = (state: UIStore): ViewType => state.currentView
+export const selectSidebarCollapsed = (state: UIStore): boolean => state.sidebarCollapsed
+export const selectQueueVisible = (state: UIStore): boolean => state.queueVisible
+export const selectTheme = (state: UIStore): ThemeType => state.theme
+export const selectCreatePlaylistDialogOpen = (state: UIStore): boolean =>
+  state.createPlaylistDialogOpen
+export const selectAddFolderDialogOpen = (state: UIStore): boolean => state.addFolderDialogOpen
+export const selectContextMenuPosition = (state: UIStore): { x: number; y: number } | null =>
+  state.contextMenuPosition
+export const selectContextMenuData = (state: UIStore): unknown | null => state.contextMenuData

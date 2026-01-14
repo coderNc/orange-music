@@ -45,7 +45,8 @@ describe('PersistenceService', () => {
       return defaultValue
     })
     mockStore.has.mockReturnValue(true)
-    // Initialize store for each test
+    // Initialize store for each test - use type assertion to bypass strict typing for mock
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     initializeStore(mockStore as any)
   })
 

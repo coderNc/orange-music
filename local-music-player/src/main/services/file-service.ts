@@ -186,9 +186,12 @@ export function unwatchAllFolders(): void {
 
 /**
  * Gets the folder name from a path
+ * Handles both Unix-style (/) and Windows-style (\) path separators
  */
 export function getFolderName(folderPath: string): string {
-  return basename(folderPath)
+  // Normalize path separators to handle both Unix and Windows paths
+  const normalizedPath = folderPath.replace(/\\/g, '/')
+  return basename(normalizedPath)
 }
 
 // Export the FileService interface for type safety

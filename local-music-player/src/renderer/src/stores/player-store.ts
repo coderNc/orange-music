@@ -57,7 +57,6 @@ export interface PlayerActions {
 
 export type PlayerStore = PlayerState & PlayerActions
 
-
 const initialState: PlayerState = {
   currentTrack: null,
   isPlaying: false,
@@ -86,7 +85,7 @@ function getNextIndex(
       // Play next track, stop at end
       return currentIndex < queueLength - 1 ? currentIndex + 1 : null
 
-    case 'shuffle':
+    case 'shuffle': {
       // Random track (excluding current if possible)
       if (queueLength === 1) return 0
       let nextIndex: number
@@ -94,6 +93,7 @@ function getNextIndex(
         nextIndex = Math.floor(Math.random() * queueLength)
       } while (nextIndex === currentIndex && queueLength > 1)
       return nextIndex
+    }
 
     case 'repeat-one':
       // Stay on current track
@@ -123,7 +123,7 @@ function getPreviousIndex(
       // Play previous track, stop at beginning
       return currentIndex > 0 ? currentIndex - 1 : null
 
-    case 'shuffle':
+    case 'shuffle': {
       // Random track (excluding current if possible)
       if (queueLength === 1) return 0
       let prevIndex: number
@@ -131,6 +131,7 @@ function getPreviousIndex(
         prevIndex = Math.floor(Math.random() * queueLength)
       } while (prevIndex === currentIndex && queueLength > 1)
       return prevIndex
+    }
 
     case 'repeat-one':
       // Stay on current track
@@ -204,7 +205,6 @@ export const usePlayerStore = create<PlayerStore>()(
         }
       }
     },
-
 
     pause: () => {
       audioService.pause()
@@ -323,7 +323,6 @@ export const usePlayerStore = create<PlayerStore>()(
         set({ isPlaying: false, isLoading: false, error: message })
       }
     },
-
 
     addToQueue: (track: TrackMetadata) => {
       const state = get()
@@ -482,7 +481,7 @@ export const usePlayerStore = create<PlayerStore>()(
 
       const currentTrack =
         playbackState.currentTrackId !== null
-          ? tracks.find((t) => t.id === playbackState.currentTrackId) ?? null
+          ? (tracks.find((t) => t.id === playbackState.currentTrackId) ?? null)
           : null
 
       set({
@@ -530,13 +529,13 @@ audioService.onError((error) => {
 })
 
 // Export selectors for convenience
-export const selectCurrentTrack = (state: PlayerStore) => state.currentTrack
-export const selectIsPlaying = (state: PlayerStore) => state.isPlaying
-export const selectPosition = (state: PlayerStore) => state.position
-export const selectDuration = (state: PlayerStore) => state.duration
-export const selectVolume = (state: PlayerStore) => state.volume
-export const selectPlaybackMode = (state: PlayerStore) => state.playbackMode
-export const selectQueue = (state: PlayerStore) => state.queue
-export const selectQueueIndex = (state: PlayerStore) => state.queueIndex
-export const selectIsLoading = (state: PlayerStore) => state.isLoading
-export const selectError = (state: PlayerStore) => state.error
+export const selectCurrentTrack = (state: PlayerStore): TrackMetadata | null => state.currentTrack
+export const selectIsPlaying = (state: PlayerStore): boolean => state.isPlaying
+export const selectPosition = (state: PlayerStore): number => state.position
+export const selectDuration = (state: PlayerStore): number => state.duration
+export const selectVolume = (state: PlayerStore): number => state.volume
+export const selectPlaybackMode = (state: PlayerStore): PlaybackMode => state.playbackMode
+export const selectQueue = (state: PlayerStore): TrackMetadata[] => state.queue
+export const selectQueueIndex = (state: PlayerStore): number => state.queueIndex
+export const selectIsLoading = (state: PlayerStore): boolean => state.isLoading
+export const selectError = (state: PlayerStore): string | null => state.error

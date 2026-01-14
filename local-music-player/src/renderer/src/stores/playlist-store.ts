@@ -41,7 +41,6 @@ export interface PlaylistActions {
 
 export type PlaylistStore = PlaylistState & PlaylistActions
 
-
 const initialState: PlaylistState = {
   playlists: [],
   currentPlaylistId: null,
@@ -102,8 +101,7 @@ export const usePlaylistStore = create<PlaylistStore>()(
 
       set({
         playlists: state.playlists.filter((p) => p.id !== playlistId),
-        currentPlaylistId:
-          state.currentPlaylistId === playlistId ? null : state.currentPlaylistId,
+        currentPlaylistId: state.currentPlaylistId === playlistId ? null : state.currentPlaylistId,
         error: null
       })
 
@@ -140,7 +138,6 @@ export const usePlaylistStore = create<PlaylistStore>()(
       await get().savePlaylists()
     },
 
-
     addTrackToPlaylist: async (playlistId: string, track: TrackMetadata) => {
       const state = get()
       const playlist = state.playlists.find((p) => p.id === playlistId)
@@ -170,9 +167,7 @@ export const usePlaylistStore = create<PlaylistStore>()(
       if (!playlist) return
 
       // Filter out tracks that already exist in playlist
-      const newTrackIds = tracks
-        .map((t) => t.id)
-        .filter((id) => !playlist.trackIds.includes(id))
+      const newTrackIds = tracks.map((t) => t.id).filter((id) => !playlist.trackIds.includes(id))
 
       if (newTrackIds.length === 0) return
 
@@ -292,7 +287,8 @@ export const usePlaylistStore = create<PlaylistStore>()(
 )
 
 // Export selectors for convenience
-export const selectPlaylists = (state: PlaylistStore) => state.playlists
-export const selectCurrentPlaylistId = (state: PlaylistStore) => state.currentPlaylistId
-export const selectIsLoading = (state: PlaylistStore) => state.isLoading
-export const selectError = (state: PlaylistStore) => state.error
+export const selectPlaylists = (state: PlaylistStore): Playlist[] => state.playlists
+export const selectCurrentPlaylistId = (state: PlaylistStore): string | null =>
+  state.currentPlaylistId
+export const selectIsLoading = (state: PlaylistStore): boolean => state.isLoading
+export const selectError = (state: PlaylistStore): string | null => state.error

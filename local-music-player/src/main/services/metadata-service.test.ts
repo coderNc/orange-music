@@ -1,4 +1,5 @@
 import { describe, it, expect, vi } from 'vitest'
+import type { IAudioMetadata, IPicture } from 'music-metadata'
 import {
   generateTrackId,
   getFileFormat,
@@ -16,6 +17,26 @@ vi.mock('music-metadata', () => ({
 import { parseFile } from 'music-metadata'
 
 const mockParseFile = vi.mocked(parseFile)
+
+// Helper to create mock metadata
+function createMockMetadata(
+  common: Partial<IAudioMetadata['common']> = {},
+  format: Partial<IAudioMetadata['format']> = {}
+): IAudioMetadata {
+  return {
+    common: {
+      track: { no: null, of: null },
+      disk: { no: null, of: null },
+      ...common
+    },
+    format: {
+      tagTypes: [],
+      ...format
+    },
+    native: {},
+    quality: { warnings: [] }
+  } as IAudioMetadata
+}
 
 describe('MetadataService', () => {
   describe('generateTrackId', () => {
@@ -69,36 +90,38 @@ describe('MetadataService', () => {
     })
 
     it('should convert picture to base64 data URL', () => {
-      const picture = [
+      const picture: IPicture[] = [
         {
           format: 'image/jpeg',
           data: Buffer.from('test-image-data')
         }
       ]
-      const result = coverToBase64(picture as any)
+      const result = coverToBase64(picture)
       expect(result).toMatch(/^data:image\/jpeg;base64,/)
     })
   })
 
   describe('parseAudioFile', () => {
     it('should parse metadata from audio file', async () => {
-      mockParseFile.mockResolvedValueOnce({
-        common: {
-          title: 'Test Song',
-          artist: 'Test Artist',
-          album: 'Test Album',
-          year: 2023,
-          genre: ['Rock'],
-          track: { no: 1, of: 10 },
-          disk: { no: 1, of: 1 },
-          picture: []
-        },
-        format: {
-          duration: 180,
-          bitrate: 320000,
-          sampleRate: 44100
-        }
-      } as any)
+      mockParseFile.mockResolvedValueOnce(
+        createMockMetadata(
+          {
+            title: 'Test Song',
+            artist: 'Test Artist',
+            album: 'Test Album',
+            year: 2023,
+            genre: ['Rock'],
+            track: { no: 1, of: 10 },
+            disk: { no: 1, of: 1 },
+            picture: []
+          },
+          {
+            duration: 180,
+            bitrate: 320000,
+            sampleRate: 44100
+          }
+        )
+      )
 
       const track = await parseAudioFile('/path/to/song.mp3', 'folder-1')
 
@@ -113,10 +136,7 @@ describe('MetadataService', () => {
     })
 
     it('should use fallback values when metadata is missing', async () => {
-      mockParseFile.mockResolvedValueOnce({
-        common: {},
-        format: {}
-      } as any)
+      mockParseFile.mockResolvedValueOnce(createMockMetadata({}, {}))
 
       const track = await parseAudioFile('/path/to/My Song.mp3', 'folder-1')
 
@@ -141,14 +161,8 @@ describe('MetadataService', () => {
   describe('parseAudioFiles', () => {
     it('should parse multiple files', async () => {
       mockParseFile
-        .mockResolvedValueOnce({
-          common: { title: 'Song 1' },
-          format: { duration: 100 }
-        } as any)
-        .mockResolvedValueOnce({
-          common: { title: 'Song 2' },
-          format: { duration: 200 }
-        } as any)
+        .mockResolvedValueOnce(createMockMetadata({ title: 'Song 1' }, { duration: 100 }))
+        .mockResolvedValueOnce(createMockMetadata({ title: 'Song 2' }, { duration: 200 }))
 
       const tracks = await parseAudioFiles(['/path/to/song1.mp3', '/path/to/song2.mp3'], 'folder-1')
 
@@ -158,10 +172,7 @@ describe('MetadataService', () => {
     })
 
     it('should call progress callback', async () => {
-      mockParseFile.mockResolvedValue({
-        common: { title: 'Song' },
-        format: { duration: 100 }
-      } as any)
+      mockParseFile.mockResolvedValue(createMockMetadata({ title: 'Song' }, { duration: 100 }))
 
       const onProgress = vi.fn()
       await parseAudioFiles(
@@ -178,15 +189,9 @@ describe('MetadataService', () => {
 
     it('should continue parsing even if some files fail', async () => {
       mockParseFile
-        .mockResolvedValueOnce({
-          common: { title: 'Song 1' },
-          format: { duration: 100 }
-        } as any)
+        .mockResolvedValueOnce(createMockMetadata({ title: 'Song 1' }, { duration: 100 }))
         .mockRejectedValueOnce(new Error('Parse error'))
-        .mockResolvedValueOnce({
-          common: { title: 'Song 3' },
-          format: { duration: 300 }
-        } as any)
+        .mockResolvedValueOnce(createMockMetadata({ title: 'Song 3' }, { duration: 300 }))
 
       const tracks = await parseAudioFiles(
         ['/path/to/song1.mp3', '/path/to/corrupted.mp3', '/path/to/song3.mp3'],

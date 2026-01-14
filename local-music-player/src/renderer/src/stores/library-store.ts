@@ -45,7 +45,6 @@ export interface LibraryActions {
 
 export type LibraryStore = LibraryState & LibraryActions
 
-
 const initialState: LibraryState = {
   folders: [],
   tracks: [],
@@ -160,7 +159,6 @@ export const useLibraryStore = create<LibraryStore>()(
       }
     },
 
-
     removeFolder: async (folderId: string) => {
       const state = get()
       const folder = state.folders.find((f) => f.id === folderId)
@@ -274,7 +272,6 @@ export const useLibraryStore = create<LibraryStore>()(
         set({ error: message })
       }
     },
-
 
     getFilteredTracks: () => {
       const state = get()
@@ -416,9 +413,11 @@ ipcService.onScanProgress((progress) => {
 })
 
 // Export selectors for convenience
-export const selectFolders = (state: LibraryStore) => state.folders
-export const selectTracks = (state: LibraryStore) => state.tracks
-export const selectIsScanning = (state: LibraryStore) => state.isScanning
-export const selectScanProgress = (state: LibraryStore) => state.scanProgress
-export const selectSearchQuery = (state: LibraryStore) => state.searchQuery
-export const selectError = (state: LibraryStore) => state.error
+export const selectFolders = (state: LibraryStore): FolderInfo[] => state.folders
+export const selectTracks = (state: LibraryStore): TrackMetadata[] => state.tracks
+export const selectIsScanning = (state: LibraryStore): boolean => state.isScanning
+export const selectScanProgress = (
+  state: LibraryStore
+): { current: number; total: number; currentFile?: string } => state.scanProgress
+export const selectSearchQuery = (state: LibraryStore): string => state.searchQuery
+export const selectError = (state: LibraryStore): string | null => state.error

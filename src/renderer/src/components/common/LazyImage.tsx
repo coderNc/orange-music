@@ -31,7 +31,7 @@ export function LazyImage({
   const [isLoaded, setIsLoaded] = React.useState(false)
   const [hasError, setHasError] = React.useState(false)
   const [isInView, setIsInView] = React.useState(false)
-  const imgRef = React.useRef<HTMLImageElement>(null)
+  const containerRef = React.useRef<HTMLDivElement>(null)
 
   // Reset state when src changes
   React.useEffect(() => {
@@ -41,8 +41,8 @@ export function LazyImage({
 
   // Intersection observer for lazy loading
   React.useEffect(() => {
-    const img = imgRef.current
-    if (!img) return
+    const container = containerRef.current
+    if (!container) return
 
     const observer = new IntersectionObserver(
       (entries) => {
@@ -59,12 +59,12 @@ export function LazyImage({
       }
     )
 
-    observer.observe(img)
+    observer.observe(container)
 
     return () => {
       observer.disconnect()
     }
-  }, [])
+  }, [src]) // Re-observe when src changes
 
   const handleLoad = (): void => {
     setIsLoaded(true)
@@ -80,7 +80,7 @@ export function LazyImage({
   }
 
   return (
-    <div className={`relative ${className}`} ref={imgRef as React.RefObject<HTMLDivElement>}>
+    <div className={`relative ${className}`} ref={containerRef}>
       {/* Show fallback while loading */}
       {showLoading && !isLoaded && <div className="absolute inset-0">{fallback}</div>}
 

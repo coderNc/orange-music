@@ -211,8 +211,8 @@ export function PlaybackControls({ className = '' }: PlaybackControlsProps): Rea
         onClick={cyclePlaybackMode}
         className={`flex h-8 w-8 items-center justify-center rounded-full transition-colors ${
           isPlaybackModeActive
-            ? 'text-green-500 hover:text-green-400'
-            : 'text-zinc-400 hover:text-zinc-100'
+            ? 'text-orange-500 hover:text-orange-400'
+            : 'text-zinc-500 hover:text-zinc-700 dark:text-zinc-400 dark:hover:text-zinc-100'
         }`}
         title={getPlaybackModeTitle(playbackMode)}
         aria-label={getPlaybackModeTitle(playbackMode)}
@@ -224,7 +224,7 @@ export function PlaybackControls({ className = '' }: PlaybackControlsProps): Rea
       <button
         onClick={handlePrevious}
         disabled={!hasQueue}
-        className="flex h-8 w-8 items-center justify-center text-zinc-400 transition-colors hover:text-zinc-100 disabled:cursor-not-allowed disabled:opacity-50"
+        className="flex h-8 w-8 items-center justify-center text-zinc-500 transition-colors hover:text-zinc-700 disabled:cursor-not-allowed disabled:opacity-50 dark:text-zinc-400 dark:hover:text-zinc-100"
         title="上一曲"
         aria-label="上一曲"
       >
@@ -235,7 +235,7 @@ export function PlaybackControls({ className = '' }: PlaybackControlsProps): Rea
       <button
         onClick={handlePlayPause}
         disabled={isLoading}
-        className="flex h-10 w-10 items-center justify-center rounded-full bg-zinc-100 text-zinc-900 transition-colors hover:bg-zinc-200 disabled:cursor-not-allowed disabled:opacity-70"
+        className="flex h-10 w-10 items-center justify-center rounded-full bg-zinc-900 text-zinc-100 transition-colors hover:bg-zinc-800 disabled:cursor-not-allowed disabled:opacity-70 dark:bg-zinc-100 dark:text-zinc-900 dark:hover:bg-zinc-200"
         title={isPlaying ? '暂停' : '播放'}
         aria-label={isPlaying ? '暂停' : '播放'}
       >
@@ -266,7 +266,7 @@ export function PlaybackControls({ className = '' }: PlaybackControlsProps): Rea
       <button
         onClick={handleNext}
         disabled={!hasQueue}
-        className="flex h-8 w-8 items-center justify-center text-zinc-400 transition-colors hover:text-zinc-100 disabled:cursor-not-allowed disabled:opacity-50"
+        className="flex h-8 w-8 items-center justify-center text-zinc-500 transition-colors hover:text-zinc-700 disabled:cursor-not-allowed disabled:opacity-50 dark:text-zinc-400 dark:hover:text-zinc-100"
         title="下一曲"
         aria-label="下一曲"
       >

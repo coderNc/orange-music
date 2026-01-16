@@ -68,8 +68,15 @@ export function ProgressBar({
 
   return (
     <div className={`flex w-full items-center gap-2 ${maxWidthClass} ${className}`}>
-      <span className="w-10 text-right text-xs text-zinc-400">{formatTime(displayPosition)}</span>
-      <div className="relative flex-1">
+      <span className="w-10 text-right text-xs text-zinc-500 dark:text-zinc-400">
+        {formatTime(displayPosition)}
+      </span>
+      <div className="relative h-1 flex-1">
+        <div className="absolute inset-0 rounded-full bg-zinc-200 dark:bg-zinc-700" />
+        <div
+          className="absolute inset-y-0 left-0 rounded-full bg-orange-500"
+          style={{ width: `${progress}%` }}
+        />
         <input
           type="range"
           min={0}
@@ -78,10 +85,7 @@ export function ProgressBar({
           onChange={handleChange}
           onMouseDown={handleMouseDown}
           onMouseUp={handleMouseUp}
-          className="h-1 w-full cursor-pointer appearance-none rounded-full bg-zinc-700 accent-zinc-100"
-          style={{
-            background: `linear-gradient(to right, #f4f4f5 ${progress}%, #3f3f46 ${progress}%)`
-          }}
+          className="absolute inset-0 w-full cursor-pointer appearance-none bg-transparent [&::-webkit-slider-thumb]:h-3 [&::-webkit-slider-thumb]:w-3 [&::-webkit-slider-thumb]:appearance-none [&::-webkit-slider-thumb]:rounded-full [&::-webkit-slider-thumb]:bg-orange-500 [&::-webkit-slider-thumb]:opacity-0 [&::-webkit-slider-thumb]:transition-opacity hover:[&::-webkit-slider-thumb]:opacity-100"
           aria-label="播放进度"
           aria-valuemin={0}
           aria-valuemax={duration || 100}
@@ -89,7 +93,7 @@ export function ProgressBar({
           aria-valuetext={`${formatTime(displayPosition)} / ${formatTime(duration)}`}
         />
       </div>
-      <span className="w-10 text-xs text-zinc-400">{formatTime(duration)}</span>
+      <span className="w-10 text-xs text-zinc-500 dark:text-zinc-400">{formatTime(duration)}</span>
     </div>
   )
 }

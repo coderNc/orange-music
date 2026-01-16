@@ -116,29 +116,33 @@ export function VolumeControl({
     <div className={`flex items-center gap-2 ${className}`}>
       <button
         onClick={toggleMute}
-        className="flex h-8 w-8 items-center justify-center text-zinc-400 transition-colors hover:text-zinc-100"
+        className="flex h-8 w-8 items-center justify-center text-zinc-500 transition-colors hover:text-zinc-700 dark:text-zinc-400 dark:hover:text-zinc-100"
         title={volume > 0 ? '静音' : '取消静音'}
         aria-label={volume > 0 ? '静音' : '取消静音'}
       >
         {getVolumeIcon(volume)}
       </button>
-      <input
-        type="range"
-        min={0}
-        max={1}
-        step={0.01}
-        value={volume}
-        onChange={handleVolumeChange}
-        className={`h-1 cursor-pointer appearance-none rounded-full bg-zinc-700 accent-zinc-100 ${sliderWidthClass}`}
-        style={{
-          background: `linear-gradient(to right, #f4f4f5 ${volumePercent}%, #3f3f46 ${volumePercent}%)`
-        }}
-        aria-label="音量"
-        aria-valuemin={0}
-        aria-valuemax={100}
-        aria-valuenow={Math.round(volumePercent)}
-        aria-valuetext={`${Math.round(volumePercent)}%`}
-      />
+      <div className={`relative h-1 ${sliderWidthClass}`}>
+        <div className="absolute inset-0 rounded-full bg-zinc-200 dark:bg-zinc-700" />
+        <div
+          className="absolute inset-y-0 left-0 rounded-full bg-orange-500"
+          style={{ width: `${volumePercent}%` }}
+        />
+        <input
+          type="range"
+          min={0}
+          max={1}
+          step={0.01}
+          value={volume}
+          onChange={handleVolumeChange}
+          className="absolute inset-0 w-full cursor-pointer appearance-none bg-transparent [&::-webkit-slider-thumb]:h-3 [&::-webkit-slider-thumb]:w-3 [&::-webkit-slider-thumb]:appearance-none [&::-webkit-slider-thumb]:rounded-full [&::-webkit-slider-thumb]:bg-orange-500 [&::-webkit-slider-thumb]:opacity-0 [&::-webkit-slider-thumb]:transition-opacity hover:[&::-webkit-slider-thumb]:opacity-100"
+          aria-label="音量"
+          aria-valuemin={0}
+          aria-valuemax={100}
+          aria-valuenow={Math.round(volumePercent)}
+          aria-valuetext={`${Math.round(volumePercent)}%`}
+        />
+      </div>
     </div>
   )
 }

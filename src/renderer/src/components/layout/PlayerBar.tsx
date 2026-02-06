@@ -2,7 +2,9 @@ import * as React from 'react'
 import { usePlayerStore } from '@renderer/stores/player-store'
 import { useUIStore } from '@renderer/stores/ui-store'
 import { PlaybackControls, ProgressBar, VolumeControl } from '@renderer/components/player'
-import { LazyImage, DefaultAlbumArt } from '@renderer/components/common'
+import { RotatingAlbumArt } from '@renderer/components/player/RotatingAlbumArt'
+import { AudioVisualizer } from '@renderer/components/player/AudioVisualizer'
+import { useColorExtractor } from '@renderer/hooks/useColorExtractor'
 
 /**
  * PlayerBar component
@@ -14,18 +16,35 @@ import { LazyImage, DefaultAlbumArt } from '@renderer/components/common'
  */
 export function PlayerBar(): React.JSX.Element {
   const currentTrack = usePlayerStore((state) => state.currentTrack)
+  const isPlaying = usePlayerStore((state) => state.isPlaying)
   const lyricsVisible = useUIStore((state) => state.lyricsVisible)
   const toggleLyrics = useUIStore((state) => state.toggleLyrics)
+  const { dominantColor, palette } = useColorExtractor(currentTrack?.coverUrl)
 
   return (
-    <div className="fixed bottom-0 left-0 right-0 z-20 flex h-20 items-center border-t border-zinc-200 bg-white px-4 transition-colors dark:border-zinc-800 dark:bg-zinc-950">
+    <div
+      className="fixed bottom-0 left-0 right-0 z-20 flex h-20 items-center px-4 player-bar-glass dynamic-bg relative"
+      style={{
+        background: `linear-gradient(135deg, ${dominantColor}20 0%, transparent 50%), linear-gradient(to right, ${palette[0]}10, ${palette[1] || palette[0]}10)`
+      }}
+    >
+      {/* Audio visualizer background */}
+      <div className="absolute inset-0 flex items-end justify-center pointer-events-none overflow-hidden">
+        <AudioVisualizer
+          isPlaying={isPlaying}
+          barCount={48}
+          barColor="rgba(249, 115, 22, 0.2)"
+          className="w-full"
+        />
+      </div>
+
       {/* Left section - Track info */}
-      <div className="flex w-1/4 min-w-0 items-center gap-3">
-        <LazyImage
+      <div className="flex w-1/4 min-w-0 items-center gap-3 relative z-10">
+        <RotatingAlbumArt
           src={currentTrack?.coverUrl}
           alt={currentTrack?.album || 'Album art'}
-          className="h-14 w-14 rounded object-cover"
-          fallback={<DefaultAlbumArt size="md" />}
+          isPlaying={isPlaying}
+          size="md"
         />
         <div className="min-w-0 flex-1">
           <p className="truncate text-sm font-medium text-zinc-900 dark:text-zinc-100">
@@ -38,13 +57,13 @@ export function PlayerBar(): React.JSX.Element {
       </div>
 
       {/* Center section - Playback controls and progress */}
-      <div className="flex flex-1 flex-col items-center justify-center gap-1">
+      <div className="flex flex-1 flex-col items-center justify-center gap-1 relative z-10">
         <PlaybackControls />
         <ProgressBar maxWidthClass="max-w-xl" />
       </div>
 
       {/* Right section - Volume control and lyrics button */}
-      <div className="flex w-1/4 items-center justify-end gap-2">
+      <div className="flex w-1/4 items-center justify-end gap-2 relative z-10">
         <button
           onClick={toggleLyrics}
           className={`rounded-md p-2 transition-colors ${

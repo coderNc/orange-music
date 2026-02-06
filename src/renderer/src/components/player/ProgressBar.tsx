@@ -27,8 +27,10 @@ export function ProgressBar({
 
   const [isDragging, setIsDragging] = React.useState(false)
   const [dragPosition, setDragPosition] = React.useState(0)
+  const [hoverPosition, setHoverPosition] = React.useState<number | null>(null)
+  const [tooltipX, setTooltipX] = React.useState(0)
+  const progressContainerRef = React.useRef<HTMLDivElement>(null)
 
-  // Use drag position while dragging, otherwise use actual position
   const displayPosition = isDragging ? dragPosition : position
   const progress = duration > 0 ? (displayPosition / duration) * 100 : 0
 
@@ -53,6 +55,19 @@ export function ProgressBar({
     }
   }
 
+  const handleMouseMove = (e: React.MouseEvent<HTMLDivElement>): void => {
+    if (!progressContainerRef.current || duration <= 0) return
+    const rect = progressContainerRef.current.getBoundingClientRect()
+    const x = e.clientX - rect.left
+    const percent = Math.max(0, Math.min(1, x / rect.width))
+    setHoverPosition(percent * duration)
+    setTooltipX(x)
+  }
+
+  const handleMouseLeave = (): void => {
+    setHoverPosition(null)
+  }
+
   // Handle mouse up outside the slider
   React.useEffect(() => {
     if (!isDragging) {
@@ -71,7 +86,12 @@ export function ProgressBar({
       <span className="w-10 text-right text-xs text-zinc-500 dark:text-zinc-400">
         {formatTime(displayPosition)}
       </span>
-      <div className="relative h-1 flex-1">
+      <div
+        ref={progressContainerRef}
+        className="progress-bar-container relative h-2 flex-1 cursor-pointer"
+        onMouseMove={handleMouseMove}
+        onMouseLeave={handleMouseLeave}
+      >
         <div className="absolute inset-0 rounded-full bg-zinc-200 dark:bg-zinc-700" />
         <div
           className="absolute inset-y-0 left-0 rounded-full bg-orange-500"
@@ -92,6 +112,14 @@ export function ProgressBar({
           aria-valuenow={displayPosition}
           aria-valuetext={`${formatTime(displayPosition)} / ${formatTime(duration)}`}
         />
+        {hoverPosition !== null && (
+          <div
+            className="time-tooltip absolute -top-8 transform -translate-x-1/2 rounded bg-zinc-800 px-2 py-1 text-xs text-white shadow-lg"
+            style={{ left: tooltipX }}
+          >
+            {formatTime(hoverPosition)}
+          </div>
+        )}
       </div>
       <span className="w-10 text-xs text-zinc-500 dark:text-zinc-400">{formatTime(duration)}</span>
     </div>

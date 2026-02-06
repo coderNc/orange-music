@@ -34,3 +34,61 @@
 .slide-in-from-right-full {
   animation-name: slide-in-from-right;
 }
+
+.glass-panel {
+  background: rgba(255, 255, 255, 0.7);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  border: 1px solid rgba(255, 255, 255, 0.2);
+}
+
+.dark .glass-panel {
+  background: rgba(24, 24, 27, 0.7);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+@keyframes spin-slow {
+  from {
+    transform: rotate(0deg);
+  }
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+.animate-spin-slow {
+  animation: spin-slow 20s linear infinite;
+}
+
+.animate-spin-slow[data-playing='false'],
+.animate-spin-slow.paused {
+  animation-play-state: paused;
+}
+
+.dynamic-bg {
+  transition:
+    background-color 1s ease-in-out,
+    background 1s ease-in-out;
+}
+
+@keyframes visualizer-pulse {
+  0%,
+  100% {
+    transform: scaleY(0.3);
+  }
+  50% {
+    transform: scaleY(1);
+  }
+}
+
+.player-bar-glass {
+  background: rgba(255, 255, 255, 0.8);
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+  border-top: 1px solid rgba(255, 255, 255, 0.3);
+}
+
+.dark .player-bar-glass {
+  background: rgba(24, 24, 27, 0.85);
+  border-top: 1px solid rgba(255, 255, 255, 0.1);
+}

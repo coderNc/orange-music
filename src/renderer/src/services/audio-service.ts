@@ -45,6 +45,7 @@ class AudioServiceImpl {
   private status: PlaybackStatus = 'idle'
   private progressInterval: ReturnType<typeof setInterval> | null = null
   private volume: number = 1
+  private analyserNode: AnalyserNode | null = null
 
   // Event callbacks
   private endCallbacks: Set<EndCallback> = new Set()
@@ -123,7 +124,7 @@ class AudioServiceImpl {
 
       this.howl = new Howl({
         src: [src],
-        html5: true, // Use HTML5 Audio for streaming large files
+        html5: false, // Use Web Audio API for visualizer support
         volume: this.volume,
         onload: () => {
           this.setStatus('stopped')
@@ -178,6 +179,10 @@ class AudioServiceImpl {
   play(): void {
     if (!this.howl) {
       return
+    }
+    // Resume audio context if suspended (browser autoplay policy)
+    if (Howler.ctx && Howler.ctx.state === 'suspended') {
+      Howler.ctx.resume()
     }
     this.howl.play()
   }
@@ -349,6 +354,24 @@ class AudioServiceImpl {
     this.statusChangeCallbacks.clear()
     this.loadCallbacks.clear()
   }
+
+  private ensureAnalyser(): AnalyserNode | null {
+    if (!Howler.ctx) return null
+    if (!this.analyserNode) {
+      this.analyserNode = Howler.ctx.createAnalyser()
+      this.analyserNode.fftSize = 256
+      Howler.masterGain.connect(this.analyserNode)
+    }
+    return this.analyserNode
+  }
+
+  getAnalyserNode(): AnalyserNode | null {
+    return this.ensureAnalyser()
+  }
+
+  getAudioContext(): AudioContext | null {
+    return Howler.ctx || null
+  }
 }
 
 // Export singleton instance
@@ -376,6 +399,8 @@ export const onStatusChange = (callback: StatusChangeCallback): (() => void) =>
 export const onLoad = (callback: LoadCallback): (() => void) => audioService.onLoad(callback)
 export const dispose = (): void => audioService.dispose()
 export const clearAllListeners = (): void => audioService.clearAllListeners()
+export const getAnalyserNode = (): AnalyserNode | null => audioService.getAnalyserNode()
+export const getAudioContext = (): AudioContext | null => audioService.getAudioContext()
 
 // Export interface for type safety
 export interface AudioService {
@@ -398,4 +423,6 @@ export interface AudioService {
   onLoad: typeof onLoad
   dispose: typeof dispose
   clearAllListeners: typeof clearAllListeners
+  getAnalyserNode: typeof getAnalyserNode
+  getAudioContext: typeof getAudioContext
 }

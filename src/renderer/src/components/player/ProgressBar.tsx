@@ -3,20 +3,10 @@ import { usePlayerStore } from '@renderer/stores/player-store'
 import { formatTime } from '@renderer/utils'
 
 export interface ProgressBarProps {
-  /** Additional CSS classes */
   className?: string
-  /** Maximum width class for the progress bar container */
   maxWidthClass?: string
 }
 
-/**
- * ProgressBar component
- *
- * Displays playback progress with a draggable slider and time display.
- * Connects to the Player Store for position, duration, and seek operations.
- *
- * Requirements: 3.5
- */
 export function ProgressBar({
   className = '',
   maxWidthClass = 'max-w-xl'
@@ -29,6 +19,7 @@ export function ProgressBar({
   const [dragPosition, setDragPosition] = React.useState(0)
   const [hoverPosition, setHoverPosition] = React.useState<number | null>(null)
   const [tooltipX, setTooltipX] = React.useState(0)
+  const [isHovering, setIsHovering] = React.useState(false)
   const progressContainerRef = React.useRef<HTMLDivElement>(null)
 
   const displayPosition = isDragging ? dragPosition : position
@@ -40,19 +31,18 @@ export function ProgressBar({
   }
 
   const handleMouseUp = (): void => {
-    if (isDragging) {
-      seek(dragPosition)
-      setIsDragging(false)
-    }
+    if (!isDragging) return
+    seek(dragPosition)
+    setIsDragging(false)
   }
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>): void => {
     const newPosition = parseFloat(e.target.value)
     if (isDragging) {
       setDragPosition(newPosition)
-    } else {
-      seek(newPosition)
+      return
     }
+    seek(newPosition)
   }
 
   const handleMouseMove = (e: React.MouseEvent<HTMLDivElement>): void => {
@@ -61,42 +51,56 @@ export function ProgressBar({
     const x = e.clientX - rect.left
     const percent = Math.max(0, Math.min(1, x / rect.width))
     setHoverPosition(percent * duration)
-    setTooltipX(x)
+    setTooltipX(Math.max(20, Math.min(x, rect.width - 20)))
+    setIsHovering(true)
   }
 
   const handleMouseLeave = (): void => {
     setHoverPosition(null)
+    setIsHovering(false)
   }
 
-  // Handle mouse up outside the slider
   React.useEffect(() => {
-    if (!isDragging) {
-      return
-    }
+    if (!isDragging) return
+
     const handleGlobalMouseUp = (): void => {
       seek(dragPosition)
       setIsDragging(false)
     }
+
     window.addEventListener('mouseup', handleGlobalMouseUp)
     return () => window.removeEventListener('mouseup', handleGlobalMouseUp)
   }, [isDragging, dragPosition, seek])
 
+  const thumbPercent = duration > 0 ? `${progress}%` : '0%'
+  const showHint = hoverPosition !== null && duration > 0
+
   return (
     <div className={`flex w-full items-center gap-2 ${maxWidthClass} ${className}`}>
-      <span className="w-10 text-right text-xs text-zinc-500 dark:text-zinc-400">
+      <span className="w-10 text-right text-xs text-zinc-600 dark:text-zinc-300">
         {formatTime(displayPosition)}
       </span>
       <div
         ref={progressContainerRef}
-        className="progress-bar-container relative h-2 flex-1 cursor-pointer"
+        className={`magnetic-slider relative h-2 flex-1 cursor-pointer ${isDragging ? 'dragging' : ''}`}
         onMouseMove={handleMouseMove}
         onMouseLeave={handleMouseLeave}
       >
-        <div className="absolute inset-0 rounded-full bg-zinc-200 dark:bg-zinc-700" />
+        <div className="absolute inset-0 rounded-full bg-zinc-300/90 dark:bg-zinc-700/70" />
         <div
-          className="absolute inset-y-0 left-0 rounded-full bg-orange-500"
-          style={{ width: `${progress}%` }}
+          className="absolute inset-y-0 left-0 rounded-full"
+          style={{
+            width: `${progress}%`,
+            background: 'linear-gradient(90deg, rgba(var(--ambient-rgb), 0.85), rgba(var(--ambient-rgb), 0.48))'
+          }}
         />
+
+        <div
+          data-active={isDragging || isHovering}
+          className="progress-thumb absolute top-1/2 h-3 w-3 -translate-x-1/2 -translate-y-1/2 rounded-full border border-white/80 bg-white shadow-md"
+          style={{ left: thumbPercent }}
+        />
+
         <input
           type="range"
           min={0}
@@ -105,23 +109,24 @@ export function ProgressBar({
           onChange={handleChange}
           onMouseDown={handleMouseDown}
           onMouseUp={handleMouseUp}
-          className="absolute inset-0 w-full cursor-pointer appearance-none bg-transparent [&::-webkit-slider-thumb]:h-3 [&::-webkit-slider-thumb]:w-3 [&::-webkit-slider-thumb]:appearance-none [&::-webkit-slider-thumb]:rounded-full [&::-webkit-slider-thumb]:bg-orange-500 [&::-webkit-slider-thumb]:opacity-0 [&::-webkit-slider-thumb]:transition-opacity hover:[&::-webkit-slider-thumb]:opacity-100"
+          className="focus-ring absolute inset-0 w-full cursor-pointer appearance-none bg-transparent [&::-webkit-slider-thumb]:h-3 [&::-webkit-slider-thumb]:w-3 [&::-webkit-slider-thumb]:appearance-none [&::-webkit-slider-thumb]:rounded-full [&::-webkit-slider-thumb]:bg-transparent"
           aria-label="播放进度"
           aria-valuemin={0}
           aria-valuemax={duration || 100}
           aria-valuenow={displayPosition}
           aria-valuetext={`${formatTime(displayPosition)} / ${formatTime(duration)}`}
         />
-        {hoverPosition !== null && (
+
+        {showHint && (
           <div
-            className="time-tooltip absolute -top-8 transform -translate-x-1/2 rounded bg-zinc-800 px-2 py-1 text-xs text-white shadow-lg"
+            className="absolute -top-9 -translate-x-1/2 rounded-md border border-white/30 bg-zinc-900/90 px-2 py-1 text-[11px] text-white shadow-xl"
             style={{ left: tooltipX }}
           >
             {formatTime(hoverPosition)}
           </div>
         )}
       </div>
-      <span className="w-10 text-xs text-zinc-500 dark:text-zinc-400">{formatTime(duration)}</span>
+      <span className="w-10 text-xs text-zinc-600 dark:text-zinc-300">{formatTime(duration)}</span>
     </div>
   )
 }

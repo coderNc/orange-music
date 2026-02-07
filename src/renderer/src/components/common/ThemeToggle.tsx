@@ -51,7 +51,7 @@ export function ThemeToggle({ collapsed = false }: ThemeToggleProps): React.JSX.
   return (
     <button
       onClick={toggleTheme}
-      className={`flex w-full items-center rounded-md px-3 py-2 text-sm font-medium text-zinc-500 transition-colors hover:bg-zinc-100 hover:text-zinc-900 dark:text-zinc-400 dark:hover:bg-zinc-800/50 dark:hover:text-zinc-100 ${
+      className={`interactive-soft focus-ring flex w-full items-center rounded-xl px-3 py-2 text-sm font-medium text-zinc-600 hover:bg-zinc-200/60 hover:text-zinc-900 dark:text-zinc-300 dark:hover:bg-zinc-800/60 dark:hover:text-zinc-100 ${
         collapsed ? 'justify-center' : 'justify-start gap-3'
       }`}
       title={collapsed ? themeLabels[theme] : undefined}

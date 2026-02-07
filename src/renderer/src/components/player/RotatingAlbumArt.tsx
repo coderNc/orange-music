@@ -24,16 +24,13 @@ export function RotatingAlbumArt({
     <div
       className={`relative ${sizeClasses[size]} overflow-hidden rounded-full`}
       style={{
-        boxShadow: '0 0 0 2px rgba(0,0,0,0.1), inset 0 0 20px rgba(0,0,0,0.1)'
+        boxShadow: '0 0 0 2px rgba(255,255,255,0.45), 0 10px 20px rgba(0,0,0,0.18), inset 0 0 16px rgba(0,0,0,0.22)'
       }}
     >
-      <div className="absolute inset-0 rounded-full bg-gradient-to-br from-zinc-800 to-zinc-900" />
+      <div className="absolute inset-0 rounded-full bg-gradient-to-br from-zinc-700 to-zinc-900 dark:from-zinc-500 dark:to-zinc-900" />
+      <div className="absolute inset-[15%] rounded-full bg-zinc-700/90 dark:bg-zinc-800" style={{ boxShadow: 'inset 0 0 10px rgba(0,0,0,0.45)' }} />
       <div
-        className="absolute inset-[15%] rounded-full bg-zinc-700"
-        style={{ boxShadow: 'inset 0 0 10px rgba(0,0,0,0.5)' }}
-      />
-      <div
-        className={`absolute inset-[5%] rounded-full overflow-hidden animate-spin-slow ${isPlaying ? '' : 'paused'}`}
+        className={`absolute inset-[5%] overflow-hidden rounded-full animate-spin-slow ${isPlaying ? '' : 'paused'}`}
         data-playing={isPlaying ? 'true' : 'false'}
       >
         <LazyImage
@@ -43,14 +40,8 @@ export function RotatingAlbumArt({
           fallback={<DefaultAlbumArt size={size} />}
         />
       </div>
-      <div
-        className="absolute inset-0 rounded-full pointer-events-none"
-        style={{
-          background:
-            'radial-gradient(circle at 30% 30%, rgba(255,255,255,0.1) 0%, transparent 50%)'
-        }}
-      />
-      <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 h-[12%] w-[12%] rounded-full bg-zinc-900 border border-zinc-700" />
+      <div className="pointer-events-none absolute inset-0 rounded-full" style={{ background: 'radial-gradient(circle at 30% 28%, rgba(255,255,255,0.24) 0%, transparent 52%)' }} />
+      <div className="absolute left-1/2 top-1/2 h-[12%] w-[12%] -translate-x-1/2 -translate-y-1/2 rounded-full border border-white/25 bg-zinc-900" />
     </div>
   )
 }

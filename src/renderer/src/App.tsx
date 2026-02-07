@@ -20,18 +20,15 @@ function MainContent(): React.JSX.Element {
   const setCurrentPlaylist = usePlaylistStore((state) => state.setCurrentPlaylist)
   const searchInputRef = useSearchInputRef()
 
-  // Handle playlist selection - show detail view
   const handleSelectPlaylist = (playlistId: string): void => {
     setCurrentPlaylist(playlistId)
   }
 
-  // Placeholder content for each view - will be implemented in later tasks
   const renderContent = (): React.JSX.Element | null => {
     switch (currentView) {
       case 'library':
         return <LibraryView />
       case 'playlists':
-        // If a playlist is selected, show detail view
         if (currentPlaylistId) {
           const playlist = usePlaylistStore.getState().getPlaylistById(currentPlaylistId)
           if (playlist) {
@@ -43,7 +40,7 @@ function MainContent(): React.JSX.Element {
         return (
           <div className="space-y-6">
             <div className="flex items-center justify-between gap-4">
-              <h2 className="text-2xl font-bold text-zinc-100">专辑</h2>
+              <h2 className="text-2xl font-bold text-zinc-900 dark:text-zinc-100">专辑</h2>
               <SearchBar className="w-64" inputRef={searchInputRef ?? undefined} />
             </div>
             <AlbumGrid />
@@ -53,7 +50,7 @@ function MainContent(): React.JSX.Element {
         return (
           <div className="space-y-6">
             <div className="flex items-center justify-between gap-4">
-              <h2 className="text-2xl font-bold text-zinc-100">艺术家</h2>
+              <h2 className="text-2xl font-bold text-zinc-900 dark:text-zinc-100">艺术家</h2>
               <SearchBar className="w-64" inputRef={searchInputRef ?? undefined} />
             </div>
             <ArtistList />
@@ -61,9 +58,9 @@ function MainContent(): React.JSX.Element {
         )
       case 'queue':
         return (
-          <div className="space-y-4">
-            <h2 className="text-2xl font-bold">播放队列</h2>
-            <p className="text-zinc-400">播放队列视图将在任务 11 中实现</p>
+          <div className="glass-panel space-y-3 rounded-2xl p-6">
+            <h2 className="text-2xl font-bold text-zinc-900 dark:text-zinc-100">播放队列</h2>
+            <p className="text-zinc-600 dark:text-zinc-300">队列已集成在右侧面板中，可通过侧边栏“播放队列”打开。</p>
           </div>
         )
       default:
@@ -77,27 +74,17 @@ function MainContent(): React.JSX.Element {
 function App(): React.JSX.Element {
   const searchInputRef = React.useRef<HTMLInputElement>(null)
 
-  // Initialize app and load data
   const { isLoading, error, progress } = useAppInitialization()
 
-  // Set up state sync (save state periodically and on close)
   useAppStateSync()
-
-  // Initialize keyboard shortcuts
   useKeyboardShortcuts({ searchInputRef })
-
-  // Set up error notifications from stores
   useErrorNotifications()
-
-  // Initialize theme system
   useTheme()
 
-  // Show loading screen while initializing
   if (isLoading) {
     return <LoadingScreen message={progress.message} error={error} />
   }
 
-  // Show error screen if initialization failed
   if (error) {
     return <LoadingScreen error={error} />
   }

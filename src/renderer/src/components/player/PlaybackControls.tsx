@@ -1,25 +1,14 @@
 import * as React from 'react'
 import { usePlayerStore, type PlaybackMode } from '@renderer/stores/player-store'
 
-/**
- * Icon for sequential playback mode
- */
 function SequentialIcon(): React.JSX.Element {
   return (
     <svg className="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-      <path
-        strokeLinecap="round"
-        strokeLinejoin="round"
-        strokeWidth={2}
-        d="M14 5l7 7m0 0l-7 7m7-7H3"
-      />
+      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M14 5l7 7m0 0l-7 7m7-7H3" />
     </svg>
   )
 }
 
-/**
- * Icon for shuffle playback mode
- */
 function ShuffleIcon(): React.JSX.Element {
   return (
     <svg className="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
@@ -33,9 +22,6 @@ function ShuffleIcon(): React.JSX.Element {
   )
 }
 
-/**
- * Icon for repeat-one playback mode
- */
 function RepeatOneIcon(): React.JSX.Element {
   return (
     <svg className="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
@@ -52,9 +38,6 @@ function RepeatOneIcon(): React.JSX.Element {
   )
 }
 
-/**
- * Icon for repeat-all playback mode
- */
 function RepeatAllIcon(): React.JSX.Element {
   return (
     <svg className="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
@@ -68,9 +51,6 @@ function RepeatAllIcon(): React.JSX.Element {
   )
 }
 
-/**
- * Previous track icon
- */
 function PreviousIcon(): React.JSX.Element {
   return (
     <svg className="h-5 w-5" fill="currentColor" viewBox="0 0 24 24">
@@ -79,9 +59,6 @@ function PreviousIcon(): React.JSX.Element {
   )
 }
 
-/**
- * Next track icon
- */
 function NextIcon(): React.JSX.Element {
   return (
     <svg className="h-5 w-5" fill="currentColor" viewBox="0 0 24 24">
@@ -90,9 +67,6 @@ function NextIcon(): React.JSX.Element {
   )
 }
 
-/**
- * Play icon
- */
 function PlayIcon(): React.JSX.Element {
   return (
     <svg className="ml-0.5 h-5 w-5" fill="currentColor" viewBox="0 0 24 24">
@@ -101,9 +75,6 @@ function PlayIcon(): React.JSX.Element {
   )
 }
 
-/**
- * Pause icon
- */
 function PauseIcon(): React.JSX.Element {
   return (
     <svg className="h-5 w-5" fill="currentColor" viewBox="0 0 24 24">
@@ -112,9 +83,6 @@ function PauseIcon(): React.JSX.Element {
   )
 }
 
-/**
- * Get the icon component for a playback mode
- */
 function getPlaybackModeIcon(mode: PlaybackMode): React.JSX.Element {
   switch (mode) {
     case 'shuffle':
@@ -128,9 +96,6 @@ function getPlaybackModeIcon(mode: PlaybackMode): React.JSX.Element {
   }
 }
 
-/**
- * Get the title/tooltip for a playback mode
- */
 function getPlaybackModeTitle(mode: PlaybackMode): string {
   switch (mode) {
     case 'shuffle':
@@ -144,9 +109,6 @@ function getPlaybackModeTitle(mode: PlaybackMode): string {
   }
 }
 
-/**
- * Cycle through playback modes
- */
 const PLAYBACK_MODES: PlaybackMode[] = ['sequential', 'shuffle', 'repeat-one', 'repeat-all']
 
 function getNextPlaybackMode(current: PlaybackMode): PlaybackMode {
@@ -156,18 +118,9 @@ function getNextPlaybackMode(current: PlaybackMode): PlaybackMode {
 }
 
 export interface PlaybackControlsProps {
-  /** Additional CSS classes */
   className?: string
 }
 
-/**
- * PlaybackControls component
- *
- * Provides play/pause, previous, next, and playback mode controls.
- * Connects to the Player Store for state and actions.
- *
- * Requirements: 3.1, 3.2, 3.3, 3.4, 7.1, 7.2, 7.3, 7.4, 7.5
- */
 export function PlaybackControls({ className = '' }: PlaybackControlsProps): React.JSX.Element {
   const isPlaying = usePlayerStore((state) => state.isPlaying)
   const playbackMode = usePlayerStore((state) => state.playbackMode)
@@ -183,17 +136,9 @@ export function PlaybackControls({ className = '' }: PlaybackControlsProps): Rea
   const handlePlayPause = (): void => {
     if (isPlaying) {
       pause()
-    } else {
-      play()
+      return
     }
-  }
-
-  const handlePrevious = (): void => {
-    previous()
-  }
-
-  const handleNext = (): void => {
-    next()
+    play()
   }
 
   const cyclePlaybackMode = (): void => {
@@ -206,13 +151,12 @@ export function PlaybackControls({ className = '' }: PlaybackControlsProps): Rea
 
   return (
     <div className={`flex items-center gap-4 ${className}`}>
-      {/* Playback mode toggle */}
       <button
         onClick={cyclePlaybackMode}
-        className={`flex h-8 w-8 items-center justify-center rounded-full transition-colors ${
+        className={`interactive-soft focus-ring flex h-8 w-8 items-center justify-center rounded-full transition-colors ${
           isPlaybackModeActive
-            ? 'text-orange-500 hover:text-orange-400'
-            : 'text-zinc-500 hover:text-zinc-700 dark:text-zinc-400 dark:hover:text-zinc-100'
+            ? 'text-orange-500 hover:bg-orange-100/70 hover:text-orange-400 dark:bg-orange-900/20 dark:text-orange-300'
+            : 'text-zinc-600 hover:bg-zinc-200/60 hover:text-zinc-800 dark:text-zinc-300 dark:hover:bg-zinc-800/70 dark:hover:text-zinc-100'
         }`}
         title={getPlaybackModeTitle(playbackMode)}
         aria-label={getPlaybackModeTitle(playbackMode)}
@@ -220,35 +164,27 @@ export function PlaybackControls({ className = '' }: PlaybackControlsProps): Rea
         {getPlaybackModeIcon(playbackMode)}
       </button>
 
-      {/* Previous track */}
       <button
-        onClick={handlePrevious}
+        onClick={previous}
         disabled={!hasQueue}
-        className="flex h-8 w-8 items-center justify-center text-zinc-500 transition-colors hover:text-zinc-700 disabled:cursor-not-allowed disabled:opacity-50 dark:text-zinc-400 dark:hover:text-zinc-100"
+        className="interactive-soft focus-ring flex h-8 w-8 items-center justify-center rounded-full text-zinc-600 hover:bg-zinc-200/60 hover:text-zinc-800 disabled:cursor-not-allowed disabled:opacity-50 dark:text-zinc-300 dark:hover:bg-zinc-800/70 dark:hover:text-zinc-100"
         title="上一曲"
         aria-label="上一曲"
       >
         <PreviousIcon />
       </button>
 
-      {/* Play/Pause */}
       <button
         onClick={handlePlayPause}
         disabled={isLoading}
-        className="flex h-10 w-10 items-center justify-center rounded-full bg-zinc-900 text-zinc-100 transition-colors hover:bg-zinc-800 disabled:cursor-not-allowed disabled:opacity-70 dark:bg-zinc-100 dark:text-zinc-900 dark:hover:bg-zinc-200"
+        className="interactive-soft focus-ring relative flex h-10 w-10 items-center justify-center rounded-full bg-zinc-900 text-zinc-100 hover:bg-zinc-800 disabled:cursor-not-allowed disabled:opacity-70 dark:bg-zinc-100 dark:text-zinc-900 dark:hover:bg-zinc-200"
         title={isPlaying ? '暂停' : '播放'}
         aria-label={isPlaying ? '暂停' : '播放'}
       >
+        {isPlaying && <span className="pulse-ring" />}
         {isLoading ? (
           <svg className="h-5 w-5 animate-spin" viewBox="0 0 24 24" fill="none">
-            <circle
-              className="opacity-25"
-              cx="12"
-              cy="12"
-              r="10"
-              stroke="currentColor"
-              strokeWidth="4"
-            />
+            <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4" />
             <path
               className="opacity-75"
               fill="currentColor"
@@ -262,18 +198,16 @@ export function PlaybackControls({ className = '' }: PlaybackControlsProps): Rea
         )}
       </button>
 
-      {/* Next track */}
       <button
-        onClick={handleNext}
+        onClick={next}
         disabled={!hasQueue}
-        className="flex h-8 w-8 items-center justify-center text-zinc-500 transition-colors hover:text-zinc-700 disabled:cursor-not-allowed disabled:opacity-50 dark:text-zinc-400 dark:hover:text-zinc-100"
+        className="interactive-soft focus-ring flex h-8 w-8 items-center justify-center rounded-full text-zinc-600 hover:bg-zinc-200/60 hover:text-zinc-800 disabled:cursor-not-allowed disabled:opacity-50 dark:text-zinc-300 dark:hover:bg-zinc-800/70 dark:hover:text-zinc-100"
         title="下一曲"
         aria-label="下一曲"
       >
         <NextIcon />
       </button>
 
-      {/* Spacer for symmetry with playback mode button */}
       <div className="h-8 w-8" />
     </div>
   )

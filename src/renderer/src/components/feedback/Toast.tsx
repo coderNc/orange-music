@@ -1,7 +1,6 @@
 import * as React from 'react'
 import { useToastStore, type Toast } from '@renderer/stores/toast-store'
 
-// Icon components
 function SuccessIcon(): React.JSX.Element {
   return (
     <svg className="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
@@ -52,7 +51,6 @@ function CloseIcon(): React.JSX.Element {
   )
 }
 
-// Toast item component
 interface ToastItemProps {
   toast: Toast
   onClose: () => void
@@ -60,10 +58,10 @@ interface ToastItemProps {
 
 function ToastItem({ toast, onClose }: ToastItemProps): React.JSX.Element {
   const typeStyles = {
-    success: 'bg-emerald-500/10 border-emerald-500/50 text-emerald-400',
-    error: 'bg-red-500/10 border-red-500/50 text-red-400',
-    warning: 'bg-amber-500/10 border-amber-500/50 text-amber-400',
-    info: 'bg-blue-500/10 border-blue-500/50 text-blue-400'
+    success: 'border-emerald-500/35 text-emerald-400',
+    error: 'border-red-500/35 text-red-400',
+    warning: 'border-amber-500/35 text-amber-400',
+    info: 'border-blue-500/35 text-blue-400'
   }
 
   const icons = {
@@ -75,16 +73,16 @@ function ToastItem({ toast, onClose }: ToastItemProps): React.JSX.Element {
 
   return (
     <div
-      className={`flex items-start gap-3 rounded-lg border px-4 py-3 shadow-lg backdrop-blur-sm ${typeStyles[toast.type]} animate-in slide-in-from-right-full duration-300`}
+      className={`glass-panel animate-in slide-in-from-right-full flex items-start gap-3 rounded-xl px-4 py-3 shadow-xl ${typeStyles[toast.type]}`}
       role="alert"
     >
-      <span className="flex-shrink-0">{icons[toast.type]}</span>
-      <div className="flex-1 min-w-0">
-        <p className="text-sm font-medium text-zinc-100">{toast.message}</p>
+      <span className="mt-0.5 flex-shrink-0">{icons[toast.type]}</span>
+      <div className="min-w-0 flex-1">
+        <p className="text-sm font-medium text-zinc-900 dark:text-zinc-100">{toast.message}</p>
         {toast.action && (
           <button
             onClick={toast.action.onClick}
-            className="mt-2 text-xs font-medium underline hover:no-underline"
+            className="mt-2 text-xs font-medium text-zinc-700 underline hover:no-underline dark:text-zinc-200"
           >
             {toast.action.label}
           </button>
@@ -92,7 +90,7 @@ function ToastItem({ toast, onClose }: ToastItemProps): React.JSX.Element {
       </div>
       <button
         onClick={onClose}
-        className="flex-shrink-0 rounded p-1 text-zinc-400 transition-colors hover:bg-zinc-700 hover:text-zinc-200"
+        className="interactive-soft rounded p-1 text-zinc-500 hover:bg-zinc-200/60 hover:text-zinc-800 dark:text-zinc-300 dark:hover:bg-zinc-800 dark:hover:text-zinc-100"
         aria-label="关闭"
       >
         <CloseIcon />
@@ -101,17 +99,12 @@ function ToastItem({ toast, onClose }: ToastItemProps): React.JSX.Element {
   )
 }
 
-// Toast container component
 export function ToastContainer(): React.JSX.Element {
   const toasts = useToastStore((state) => state.toasts)
   const removeToast = useToastStore((state) => state.removeToast)
 
   return (
-    <div
-      className="fixed bottom-24 right-4 z-50 flex flex-col gap-2 max-w-sm"
-      aria-live="polite"
-      aria-label="通知"
-    >
+    <div className="fixed bottom-24 right-4 z-50 flex max-w-sm flex-col gap-2" aria-live="polite" aria-label="通知">
       {toasts.map((t) => (
         <ToastItem key={t.id} toast={t} onClose={() => removeToast(t.id)} />
       ))}

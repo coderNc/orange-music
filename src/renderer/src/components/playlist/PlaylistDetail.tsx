@@ -7,9 +7,6 @@ import { usePlayerStore } from '@renderer/stores/player-store'
 import { formatTime } from '@renderer/utils/format'
 import { LazyImage, DefaultAlbumArt } from '@renderer/components/common'
 
-/**
- * Back arrow icon
- */
 function BackIcon(): React.JSX.Element {
   return (
     <svg className="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
@@ -18,9 +15,6 @@ function BackIcon(): React.JSX.Element {
   )
 }
 
-/**
- * Drag handle icon
- */
 function DragHandleIcon(): React.JSX.Element {
   return (
     <svg className="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
@@ -29,9 +23,6 @@ function DragHandleIcon(): React.JSX.Element {
   )
 }
 
-/**
- * Delete icon
- */
 function DeleteIcon(): React.JSX.Element {
   return (
     <svg className="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
@@ -45,9 +36,6 @@ function DeleteIcon(): React.JSX.Element {
   )
 }
 
-/**
- * Play icon
- */
 function PlayIcon(): React.JSX.Element {
   return (
     <svg className="h-5 w-5" fill="currentColor" viewBox="0 0 24 24">
@@ -56,41 +44,21 @@ function PlayIcon(): React.JSX.Element {
   )
 }
 
-/**
- * Playlist icon
- */
 function PlaylistIcon(): React.JSX.Element {
   return (
     <svg className="h-8 w-8" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-      <path
-        strokeLinecap="round"
-        strokeLinejoin="round"
-        strokeWidth={2}
-        d="M4 6h16M4 10h16M4 14h16M4 18h16"
-      />
+      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 6h16M4 10h16M4 14h16M4 18h16" />
     </svg>
   )
 }
 
-/**
- * Playing indicator icon
- */
 function PlayingIndicator(): React.JSX.Element {
   return (
     <div className="flex h-10 w-10 items-center justify-center">
       <div className="flex items-end gap-0.5">
-        <div
-          className="h-3 w-1 animate-pulse rounded-full bg-green-500"
-          style={{ animationDelay: '0ms' }}
-        />
-        <div
-          className="h-4 w-1 animate-pulse rounded-full bg-green-500"
-          style={{ animationDelay: '150ms' }}
-        />
-        <div
-          className="h-2 w-1 animate-pulse rounded-full bg-green-500"
-          style={{ animationDelay: '300ms' }}
-        />
+        <div className="h-3 w-1 animate-pulse rounded-full bg-orange-500" style={{ animationDelay: '0ms' }} />
+        <div className="h-4 w-1 animate-pulse rounded-full bg-orange-500" style={{ animationDelay: '150ms' }} />
+        <div className="h-2 w-1 animate-pulse rounded-full bg-orange-500" style={{ animationDelay: '300ms' }} />
       </div>
     </div>
   )
@@ -110,9 +78,6 @@ interface PlaylistTrackItemProps {
   onDrop: (e: React.DragEvent, index: number) => void
 }
 
-/**
- * Individual track item in the playlist with drag support
- */
 function PlaylistTrackItem({
   track,
   index,
@@ -128,9 +93,9 @@ function PlaylistTrackItem({
 }: PlaylistTrackItemProps): React.JSX.Element {
   return (
     <div
-      className={`group flex items-center gap-3 rounded-md px-3 py-2 transition-colors ${
+      className={`interactive-soft group flex items-center gap-3 rounded-xl px-3 py-2 ${
         isDragging ? 'opacity-50' : ''
-      } ${isCurrentTrack ? 'bg-orange-100/80 dark:bg-zinc-800/80' : 'hover:bg-zinc-100 dark:hover:bg-zinc-800/50'}`}
+      } ${isCurrentTrack ? 'bg-orange-100/75 dark:bg-orange-900/20' : 'hover:bg-zinc-200/60 dark:hover:bg-zinc-800/50'}`}
       draggable
       onDragStart={(e) => onDragStart(e, index)}
       onDragOver={(e) => onDragOver(e, index)}
@@ -138,61 +103,48 @@ function PlaylistTrackItem({
       onDrop={(e) => onDrop(e, index)}
       onDoubleClick={onDoubleClick}
     >
-      {/* Drag handle */}
-      <div className="cursor-grab text-zinc-500 dark:text-zinc-600 opacity-0 transition-opacity group-hover:opacity-100 active:cursor-grabbing">
+      <div className="cursor-grab text-zinc-500 opacity-0 transition-opacity group-hover:opacity-100 active:cursor-grabbing dark:text-zinc-400">
         <DragHandleIcon />
       </div>
 
-      {/* Track number or playing indicator */}
       <div className="w-8 text-center">
         {isCurrentTrack && isPlaying ? (
           <PlayingIndicator />
         ) : (
-          <span
-            className={`text-sm ${isCurrentTrack ? 'text-green-500' : 'text-zinc-500 dark:text-zinc-400'}`}
-          >
+          <span className={`text-sm ${isCurrentTrack ? 'text-orange-500' : 'text-zinc-500 dark:text-zinc-400'}`}>
             {index + 1}
           </span>
         )}
       </div>
 
-      {/* Album art with lazy loading and fallback */}
       <LazyImage
         src={track.coverUrl}
         alt={track.album || 'Album art'}
-        className="h-10 w-10 rounded object-cover"
+        className="h-10 w-10 rounded-lg object-cover"
         fallback={<DefaultAlbumArt size="sm" />}
       />
 
-      {/* Track info */}
       <div className="min-w-0 flex-1">
-        <p
-          className={`truncate text-sm font-medium ${isCurrentTrack ? 'text-green-500' : 'text-zinc-900 dark:text-zinc-100'}`}
-        >
+        <p className={`truncate text-sm font-medium ${isCurrentTrack ? 'text-orange-600 dark:text-orange-300' : 'text-zinc-900 dark:text-zinc-100'}`}>
           {track.title}
         </p>
-        <p className="truncate text-xs text-zinc-500 dark:text-zinc-400">{track.artist}</p>
+        <p className="truncate text-xs text-zinc-600 dark:text-zinc-300">{track.artist}</p>
       </div>
 
-      {/* Album */}
       <div className="hidden w-1/4 min-w-0 md:block">
-        <p className="truncate text-sm text-zinc-600 dark:text-zinc-400">{track.album}</p>
+        <p className="truncate text-sm text-zinc-600 dark:text-zinc-300">{track.album}</p>
       </div>
 
-      {/* Duration */}
       <div className="w-12 text-right">
-        <span className="text-sm text-zinc-600 dark:text-zinc-400">
-          {formatTime(track.duration)}
-        </span>
+        <span className="text-sm text-zinc-600 dark:text-zinc-300">{formatTime(track.duration)}</span>
       </div>
 
-      {/* Remove button */}
       <button
         onClick={(e) => {
           e.stopPropagation()
           onRemove()
         }}
-        className="flex h-8 w-8 items-center justify-center rounded-md text-zinc-500 dark:text-zinc-600 opacity-0 transition-all hover:bg-zinc-100 hover:text-red-600 dark:hover:bg-zinc-700 dark:hover:text-red-400 group-hover:opacity-100"
+        className="interactive-soft focus-ring flex h-8 w-8 items-center justify-center rounded-lg text-zinc-500 opacity-0 transition-all hover:bg-zinc-200/60 hover:text-red-600 group-hover:opacity-100 dark:text-zinc-400 dark:hover:bg-zinc-700 dark:hover:text-red-400"
         title="从播放列表中移除"
       >
         <DeleteIcon />
@@ -201,19 +153,11 @@ function PlaylistTrackItem({
   )
 }
 
-/**
- * Empty state when playlist has no tracks
- */
 function EmptyPlaylistState(): React.JSX.Element {
   return (
-    <div className="flex flex-col items-center justify-center py-16 text-center">
+    <div className="glass-soft flex flex-col items-center justify-center rounded-2xl py-16 text-center">
       <div className="mb-4 flex h-16 w-16 items-center justify-center rounded-full bg-zinc-100 dark:bg-zinc-800">
-        <svg
-          className="h-8 w-8 text-zinc-500 dark:text-zinc-400"
-          fill="none"
-          viewBox="0 0 24 24"
-          stroke="currentColor"
-        >
+        <svg className="h-8 w-8 text-zinc-500 dark:text-zinc-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
           <path
             strokeLinecap="round"
             strokeLinejoin="round"
@@ -223,26 +167,16 @@ function EmptyPlaylistState(): React.JSX.Element {
         </svg>
       </div>
       <h3 className="mb-2 text-lg font-medium text-zinc-900 dark:text-zinc-100">播放列表为空</h3>
-      <p className="text-sm text-zinc-600 dark:text-zinc-400">从音乐库中添加歌曲到这个播放列表</p>
+      <p className="text-sm text-zinc-600 dark:text-zinc-300">从音乐库中添加歌曲到这个播放列表</p>
     </div>
   )
 }
 
 export interface PlaylistDetailProps {
-  /** The playlist to display */
   playlist: Playlist
-  /** Callback when back button is clicked */
   onBack: () => void
 }
 
-/**
- * PlaylistDetail component
- *
- * Displays playlist details with track list, drag-and-drop reordering,
- * and track removal functionality.
- *
- * Requirements: 4.3, 4.6
- */
 export function PlaylistDetail({ playlist, onBack }: PlaylistDetailProps): React.JSX.Element {
   const tracks = useLibraryStore((state) => state.tracks)
   const getPlaylistTracks = usePlaylistStore((state) => state.getPlaylistTracks)
@@ -256,94 +190,32 @@ export function PlaylistDetail({ playlist, onBack }: PlaylistDetailProps): React
   const [draggedIndex, setDraggedIndex] = React.useState<number | null>(null)
   const [dragOverIndex, setDragOverIndex] = React.useState<number | null>(null)
 
-  // Get the actual track objects for this playlist
-  const playlistTracks = React.useMemo(() => {
-    return getPlaylistTracks(playlist.id, tracks)
-  }, [playlist.id, tracks, getPlaylistTracks])
-
-  // Calculate total duration
-  const totalDuration = React.useMemo(() => {
-    return playlistTracks.reduce((sum, track) => sum + track.duration, 0)
-  }, [playlistTracks])
-
-  const handlePlayAll = (): void => {
-    if (playlistTracks.length > 0) {
-      setQueue(playlistTracks, 0)
-    }
-  }
-
-  const handleDoubleClick = (index: number): void => {
-    setQueue(playlistTracks, index)
-  }
-
-  const handleRemoveTrack = (index: number): void => {
-    removeTrackFromPlaylist(playlist.id, index)
-  }
-
-  const handleDragStart = (e: React.DragEvent, index: number): void => {
-    setDraggedIndex(index)
-    e.dataTransfer.effectAllowed = 'move'
-    e.dataTransfer.setData('text/plain', index.toString())
-  }
-
-  const handleDragOver = (e: React.DragEvent, index: number): void => {
-    e.preventDefault()
-    e.dataTransfer.dropEffect = 'move'
-    setDragOverIndex(index)
-  }
-
-  const handleDragEnd = (): void => {
-    setDraggedIndex(null)
-    setDragOverIndex(null)
-  }
-
-  const handleDrop = (e: React.DragEvent, toIndex: number): void => {
-    e.preventDefault()
-    const fromIndex = draggedIndex
-
-    if (fromIndex !== null && fromIndex !== toIndex) {
-      reorderPlaylistTracks(playlist.id, fromIndex, toIndex)
-    }
-
-    setDraggedIndex(null)
-    setDragOverIndex(null)
-  }
+  const playlistTracks = React.useMemo(() => getPlaylistTracks(playlist.id, tracks), [playlist.id, tracks, getPlaylistTracks])
+  const totalDuration = React.useMemo(() => playlistTracks.reduce((sum, track) => sum + track.duration, 0), [playlistTracks])
 
   return (
     <div className="space-y-6">
-      {/* Back button */}
-      <button
-        onClick={onBack}
-        className="flex items-center gap-2 text-sm text-zinc-600 transition-colors hover:text-zinc-900 dark:text-zinc-400 dark:hover:text-zinc-100"
-      >
+      <button onClick={onBack} className="interactive-soft focus-ring inline-flex items-center gap-2 rounded-lg px-2 py-1 text-sm text-zinc-600 hover:text-zinc-900 dark:text-zinc-300 dark:hover:text-zinc-100">
         <BackIcon />
         返回播放列表
       </button>
 
-      {/* Playlist header */}
-      <div className="flex items-start gap-6">
-        {/* Playlist cover */}
-        <div className="flex h-48 w-48 flex-shrink-0 items-center justify-center rounded-lg bg-gradient-to-br from-purple-600 to-pink-500 shadow-lg">
+      <div className="glass-panel flex items-start gap-6 rounded-3xl p-6">
+        <div className="flex h-48 w-48 flex-shrink-0 items-center justify-center rounded-2xl bg-gradient-to-br from-orange-500 to-amber-500 text-white shadow-lg shadow-orange-500/20">
           <PlaylistIcon />
         </div>
 
-        {/* Playlist info */}
         <div className="flex flex-col justify-end py-4">
-          <p className="text-xs font-medium uppercase tracking-wider text-zinc-500 dark:text-zinc-400">
-            播放列表
-          </p>
-          <h1 className="mb-2 text-4xl font-bold text-zinc-900 dark:text-zinc-100">
-            {playlist.name}
-          </h1>
-          <p className="text-sm text-zinc-600 dark:text-zinc-400">
+          <p className="text-xs font-medium uppercase tracking-wider text-zinc-500 dark:text-zinc-400">播放列表</p>
+          <h1 className="mb-2 text-4xl font-bold text-zinc-900 dark:text-zinc-100">{playlist.name}</h1>
+          <p className="text-sm text-zinc-600 dark:text-zinc-300">
             {playlistTracks.length} 首歌曲 · {formatTime(totalDuration)}
           </p>
 
-          {/* Play button */}
           {playlistTracks.length > 0 && (
             <button
-              onClick={handlePlayAll}
-              className="mt-4 flex h-12 w-12 items-center justify-center rounded-full bg-green-500 text-black shadow-lg transition-transform hover:scale-105"
+              onClick={() => setQueue(playlistTracks, 0)}
+              className="interactive-soft focus-ring mt-4 flex h-12 w-12 items-center justify-center rounded-full bg-orange-500 text-white shadow-lg shadow-orange-500/25"
               title="播放全部"
             >
               <PlayIcon />
@@ -352,23 +224,20 @@ export function PlaylistDetail({ playlist, onBack }: PlaylistDetailProps): React
         </div>
       </div>
 
-      {/* Track list */}
       {playlistTracks.length === 0 ? (
         <EmptyPlaylistState />
       ) : (
         <div>
-          {/* Header row */}
-          <div className="mb-2 flex items-center gap-3 border-b border-zinc-200 px-3 py-2 text-xs font-medium uppercase tracking-wider text-zinc-500 dark:border-zinc-800 dark:text-zinc-500">
-            <div className="w-4" /> {/* Drag handle space */}
+          <div className="mb-2 flex items-center gap-3 border-b border-zinc-200/70 px-3 py-2 text-xs font-medium uppercase tracking-wider text-zinc-500 dark:border-zinc-700/70 dark:text-zinc-400">
+            <div className="w-4" />
             <div className="w-8 text-center">#</div>
-            <div className="w-10" /> {/* Album art space */}
+            <div className="w-10" />
             <div className="min-w-0 flex-1">标题</div>
             <div className="hidden w-1/4 min-w-0 md:block">专辑</div>
             <div className="w-12 text-right">时长</div>
-            <div className="w-8" /> {/* Remove button space */}
+            <div className="w-8" />
           </div>
 
-          {/* Virtualized track list */}
           <Virtuoso
             style={{ height: 'calc(100vh - 420px)' }}
             totalCount={playlistTracks.length}
@@ -379,19 +248,36 @@ export function PlaylistDetail({ playlist, onBack }: PlaylistDetailProps): React
               const isDragOver = dragOverIndex === index && draggedIndex !== index
 
               return (
-                <div className={isDragOver ? 'border-t-2 border-green-500' : ''}>
+                <div className={isDragOver ? 'border-t-2 border-orange-500' : ''}>
                   <PlaylistTrackItem
                     track={track}
                     index={index}
                     isPlaying={isPlaying}
                     isCurrentTrack={isCurrentTrack}
                     isDragging={isDragging}
-                    onDoubleClick={() => handleDoubleClick(index)}
-                    onRemove={() => handleRemoveTrack(index)}
-                    onDragStart={handleDragStart}
-                    onDragOver={handleDragOver}
-                    onDragEnd={handleDragEnd}
-                    onDrop={handleDrop}
+                    onDoubleClick={() => setQueue(playlistTracks, index)}
+                    onRemove={() => removeTrackFromPlaylist(playlist.id, index)}
+                    onDragStart={(e, from) => {
+                      setDraggedIndex(from)
+                      e.dataTransfer.effectAllowed = 'move'
+                      e.dataTransfer.setData('text/plain', from.toString())
+                    }}
+                    onDragOver={(e, over) => {
+                      e.preventDefault()
+                      e.dataTransfer.dropEffect = 'move'
+                      setDragOverIndex(over)
+                    }}
+                    onDragEnd={() => {
+                      setDraggedIndex(null)
+                      setDragOverIndex(null)
+                    }}
+                    onDrop={(e, to) => {
+                      e.preventDefault()
+                      const from = draggedIndex
+                      if (from !== null && from !== to) reorderPlaylistTracks(playlist.id, from, to)
+                      setDraggedIndex(null)
+                      setDragOverIndex(null)
+                    }}
                   />
                 </div>
               )

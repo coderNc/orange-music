@@ -5,13 +5,10 @@ import { useLibraryStore } from '@renderer/stores/library-store'
 import { usePlayerStore } from '@renderer/stores/player-store'
 import { LazyImage, DefaultAlbumArt } from '@renderer/components/common'
 
-/**
- * Play icon overlay
- */
 const PlayOverlay = React.memo(function PlayOverlay(): React.JSX.Element {
   return (
-    <div className="absolute inset-0 flex items-center justify-center rounded-lg bg-black/50 opacity-0 transition-opacity group-hover:opacity-100">
-      <div className="flex h-12 w-12 items-center justify-center rounded-full bg-green-500 text-zinc-900">
+    <div className="absolute inset-0 flex items-center justify-center rounded-xl bg-black/45 opacity-0 transition-opacity duration-150 group-hover:opacity-100">
+      <div className="flex h-12 w-12 items-center justify-center rounded-full bg-orange-500 text-white shadow-lg shadow-orange-500/30">
         <svg className="ml-1 h-6 w-6" fill="currentColor" viewBox="0 0 24 24">
           <path d="M8 5v14l11-7z" />
         </svg>
@@ -26,10 +23,6 @@ interface AlbumCardProps {
   onClick: () => void
 }
 
-/**
- * Individual album card
- * Memoized for performance with large libraries
- */
 const AlbumCard = React.memo(
   function AlbumCard({ album, onPlay, onClick }: AlbumCardProps): React.JSX.Element {
     const handlePlayClick = (e: React.MouseEvent): void => {
@@ -38,37 +31,29 @@ const AlbumCard = React.memo(
     }
 
     return (
-      <div
-        className="group cursor-pointer rounded-lg p-3 transition-colors hover:bg-zinc-100 dark:hover:bg-zinc-800/50"
-        onClick={onClick}
-      >
-        {/* Album art with lazy loading */}
+      <div className="surface-card interactive-soft group scroll-parallax cursor-pointer rounded-2xl p-3" onClick={onClick}>
         <div className="relative mb-3">
           <LazyImage
             src={album.coverData}
             alt={album.name}
-            className="aspect-square w-full rounded-lg object-cover"
-            fallback={<DefaultAlbumArt size="lg" className="rounded-lg" />}
+            className="aspect-square w-full rounded-xl object-cover"
+            fallback={<DefaultAlbumArt size="lg" className="rounded-xl" />}
           />
           <div onClick={handlePlayClick}>
             <PlayOverlay />
           </div>
         </div>
 
-        {/* Album info */}
-        <h3 className="truncate text-sm font-medium text-zinc-900 dark:text-zinc-100">
-          {album.name}
-        </h3>
-        <p className="truncate text-xs text-zinc-600 dark:text-zinc-400">
+        <h3 className="truncate text-sm font-semibold text-zinc-900 dark:text-zinc-100">{album.name}</h3>
+        <p className="truncate text-xs text-zinc-600 dark:text-zinc-300">
           {album.artist}
           {album.year && <span className="ml-1">• {album.year}</span>}
         </p>
-        <p className="text-xs text-zinc-500 dark:text-zinc-500">{album.trackCount} 首歌曲</p>
+        <p className="text-xs text-zinc-500 dark:text-zinc-400">{album.trackCount} 首歌曲</p>
       </div>
     )
   },
   (prevProps, nextProps) => {
-    // Custom comparison for better memoization
     return (
       prevProps.album.name === nextProps.album.name &&
       prevProps.album.artist === nextProps.album.artist &&
@@ -78,19 +63,11 @@ const AlbumCard = React.memo(
   }
 )
 
-/**
- * Empty state when no albums are available
- */
 function EmptyState(): React.JSX.Element {
   return (
-    <div className="flex flex-col items-center justify-center py-16 text-center">
+    <div className="glass-soft flex flex-col items-center justify-center rounded-2xl py-16 text-center">
       <div className="mb-4 flex h-16 w-16 items-center justify-center rounded-full bg-zinc-100 dark:bg-zinc-800">
-        <svg
-          className="h-8 w-8 text-zinc-500 dark:text-zinc-400"
-          fill="none"
-          viewBox="0 0 24 24"
-          stroke="currentColor"
-        >
+        <svg className="h-8 w-8 text-zinc-500 dark:text-zinc-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
           <path
             strokeLinecap="round"
             strokeLinejoin="round"
@@ -100,28 +77,17 @@ function EmptyState(): React.JSX.Element {
         </svg>
       </div>
       <h3 className="mb-2 text-lg font-medium text-zinc-900 dark:text-zinc-100">没有专辑</h3>
-      <p className="text-sm text-zinc-600 dark:text-zinc-400">添加音乐文件夹来查看专辑</p>
+      <p className="text-sm text-zinc-600 dark:text-zinc-300">添加音乐文件夹来查看专辑</p>
     </div>
   )
 }
 
 export interface AlbumGridProps {
-  /** Optional filter by artist name */
   artistFilter?: string
-  /** Callback when an album is selected */
   onSelectAlbum?: (album: Album) => void
-  /** Height of the grid container */
   height?: number | string
 }
 
-/**
- * AlbumGrid component
- *
- * Grid view of albums with cover art and play functionality.
- * Uses virtualization for performance with large libraries.
- *
- * Requirements: 5.4, 5.5
- */
 export function AlbumGrid({
   artistFilter,
   onSelectAlbum,
@@ -132,13 +98,11 @@ export function AlbumGrid({
 
   const allAlbums = getAlbums()
 
-  // Filter albums by artist if filter is provided
   const albums = React.useMemo(() => {
     if (!artistFilter) return allAlbums
     return allAlbums.filter((album) => album.artist.toLowerCase() === artistFilter.toLowerCase())
   }, [allAlbums, artistFilter])
 
-  // Group albums into rows of 4 for virtualization
   const COLUMNS = 4
   const rows = React.useMemo(() => {
     const result: Album[][] = []
@@ -148,18 +112,6 @@ export function AlbumGrid({
     return result
   }, [albums])
 
-  const handlePlayAlbum = (album: Album): void => {
-    if (album.tracks.length > 0) {
-      setQueue(album.tracks, 0)
-    }
-  }
-
-  const handleSelectAlbum = (album: Album): void => {
-    if (onSelectAlbum) {
-      onSelectAlbum(album)
-    }
-  }
-
   if (albums.length === 0) {
     return <EmptyState />
   }
@@ -167,9 +119,7 @@ export function AlbumGrid({
   return (
     <div className="space-y-4">
       <div className="flex items-center justify-between">
-        <h3 className="text-sm font-medium text-zinc-600 dark:text-zinc-400">
-          专辑 ({albums.length})
-        </h3>
+        <h3 className="text-sm font-medium text-zinc-600 dark:text-zinc-300">专辑 ({albums.length})</h3>
       </div>
 
       <Virtuoso
@@ -183,15 +133,12 @@ export function AlbumGrid({
                 <AlbumCard
                   key={`${album.name}-${album.artist}`}
                   album={album}
-                  onPlay={() => handlePlayAlbum(album)}
-                  onClick={() => handleSelectAlbum(album)}
+                  onPlay={() => setQueue(album.tracks, 0)}
+                  onClick={() => onSelectAlbum?.(album)}
                 />
               ))}
-              {/* Fill empty cells to maintain grid alignment */}
               {row.length < COLUMNS &&
-                Array.from({ length: COLUMNS - row.length }).map((_, i) => (
-                  <div key={`empty-${i}`} />
-                ))}
+                Array.from({ length: COLUMNS - row.length }).map((_, i) => <div key={`empty-${i}`} />)}
             </div>
           )
         }}

@@ -5,9 +5,6 @@ interface LoadingScreenProps {
   error?: string | null
 }
 
-/**
- * Music icon SVG component
- */
 function MusicIcon(): React.JSX.Element {
   return (
     <svg className="h-10 w-10 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor">
@@ -21,46 +18,36 @@ function MusicIcon(): React.JSX.Element {
   )
 }
 
-/**
- * Loading screen component shown during app initialization
- * Implements Requirements 8.7
- */
 export function LoadingScreen({ message, error }: LoadingScreenProps): React.JSX.Element {
   return (
-    <div className="flex h-screen w-screen flex-col items-center justify-center bg-zinc-50 text-zinc-900 dark:bg-zinc-900 dark:text-zinc-100">
-      {/* Logo/Icon */}
+    <div className="stage-gradient flex h-screen w-screen flex-col items-center justify-center bg-zinc-50 text-zinc-900 dark:bg-zinc-900 dark:text-zinc-100">
       <div className="mb-8 flex items-center justify-center">
         <div className="relative">
-          <div className="absolute inset-0 animate-ping rounded-full bg-emerald-500/20" />
-          <div className="relative flex h-20 w-20 items-center justify-center rounded-full bg-gradient-to-br from-emerald-500 to-emerald-600 shadow-lg shadow-emerald-500/25">
+          <div className="absolute inset-0 animate-ping rounded-full bg-orange-500/20" />
+          <div className="relative flex h-20 w-20 items-center justify-center rounded-full bg-gradient-to-br from-orange-400 to-orange-600 shadow-xl shadow-orange-500/30">
             <MusicIcon />
           </div>
         </div>
       </div>
 
-      {/* App name */}
-      <h1 className="mb-6 text-2xl font-bold text-zinc-900 dark:text-zinc-100">橘子的晴天</h1>
+      <h1 className="mb-6 text-2xl font-semibold tracking-tight text-zinc-900 dark:text-zinc-100">橘子的晴天</h1>
 
-      {/* Loading indicator or error */}
       {error ? (
-        <div className="flex flex-col items-center gap-4">
+        <div className="glass-panel flex flex-col items-center gap-4 rounded-2xl px-5 py-4">
           <div className="rounded-lg bg-red-500/10 px-4 py-2 text-red-600 dark:text-red-400">
             <p>{error}</p>
           </div>
           <button
             onClick={() => window.location.reload()}
-            className="rounded-lg bg-zinc-200 px-4 py-2 text-sm text-zinc-700 transition-colors hover:bg-zinc-300 dark:bg-zinc-800 dark:text-zinc-300 dark:hover:bg-zinc-700"
+            className="interactive-soft focus-ring rounded-lg bg-zinc-200 px-4 py-2 text-sm text-zinc-700 hover:bg-zinc-300 dark:bg-zinc-800 dark:text-zinc-300 dark:hover:bg-zinc-700"
           >
             重试
           </button>
         </div>
       ) : (
-        <div className="flex flex-col items-center gap-4">
-          {/* Spinner */}
-          <div className="h-8 w-8 animate-spin rounded-full border-2 border-zinc-300 border-t-emerald-500 dark:border-zinc-700" />
-
-          {/* Loading message */}
-          <p className="text-sm text-zinc-500 dark:text-zinc-400">{message || '正在加载...'}</p>
+        <div className="glass-panel flex flex-col items-center gap-4 rounded-2xl px-6 py-4">
+          <div className="h-8 w-8 animate-spin rounded-full border-2 border-zinc-300 border-t-orange-500 dark:border-zinc-700" />
+          <p className="text-sm text-zinc-600 dark:text-zinc-300">{message || '正在加载...'}</p>
         </div>
       )}
     </div>

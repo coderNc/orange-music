@@ -2,9 +2,6 @@ import * as React from 'react'
 import { usePlaylistStore } from '@renderer/stores/playlist-store'
 import { useUIStore } from '@renderer/stores/ui-store'
 
-/**
- * Close icon
- */
 function CloseIcon(): React.JSX.Element {
   return (
     <svg className="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
@@ -13,44 +10,25 @@ function CloseIcon(): React.JSX.Element {
   )
 }
 
-/**
- * Playlist icon
- */
 function PlaylistIcon(): React.JSX.Element {
   return (
     <svg className="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-      <path
-        strokeLinecap="round"
-        strokeLinejoin="round"
-        strokeWidth={2}
-        d="M4 6h16M4 10h16M4 14h16M4 18h16"
-      />
+      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 6h16M4 10h16M4 14h16M4 18h16" />
     </svg>
   )
 }
 
 export interface CreatePlaylistDialogProps {
-  /** Whether the dialog is open */
   isOpen?: boolean
-  /** Callback when dialog is closed */
   onClose?: () => void
-  /** Callback when playlist is created successfully */
   onCreated?: (playlistId: string) => void
 }
 
-/**
- * CreatePlaylistDialog component
- *
- * Modal dialog for creating a new playlist with name input and validation.
- *
- * Requirements: 4.1
- */
 export function CreatePlaylistDialog({
   isOpen: isOpenProp,
   onClose: onCloseProp,
   onCreated
 }: CreatePlaylistDialogProps): React.JSX.Element | null {
-  // Use UI store if props not provided
   const dialogOpenFromStore = useUIStore((state) => state.createPlaylistDialogOpen)
   const closeDialogFromStore = useUIStore((state) => state.closeCreatePlaylistDialog)
 
@@ -67,150 +45,98 @@ export function CreatePlaylistDialog({
   const [isSubmitting, setIsSubmitting] = React.useState(false)
   const inputRef = React.useRef<HTMLInputElement>(null)
 
-  // Focus input when dialog opens
   React.useEffect(() => {
-    if (isOpen && inputRef.current) {
-      // Small delay to ensure dialog is rendered
-      const timer = setTimeout(() => {
-        inputRef.current?.focus()
-      }, 100)
-      return () => clearTimeout(timer)
-    }
-    return undefined
+    if (!isOpen || !inputRef.current) return
+    const timer = setTimeout(() => inputRef.current?.focus(), 100)
+    return () => clearTimeout(timer)
   }, [isOpen])
 
-  // Reset state when dialog opens/closes
   React.useEffect(() => {
-    if (isOpen) {
-      setName('')
-      setLocalError(null)
-      clearError()
-    }
+    if (!isOpen) return
+    setName('')
+    setLocalError(null)
+    clearError()
   }, [isOpen, clearError])
 
-  // Validate name
   const validateName = (value: string): string | null => {
     const trimmed = value.trim()
-
-    if (!trimmed) {
-      return '请输入播放列表名称'
-    }
-
-    if (trimmed.length > 100) {
-      return '播放列表名称不能超过 100 个字符'
-    }
-
-    // Check for duplicate names
+    if (!trimmed) return '请输入播放列表名称'
+    if (trimmed.length > 100) return '播放列表名称不能超过 100 个字符'
     const exists = playlists.some((p) => p.name.toLowerCase() === trimmed.toLowerCase())
-    if (exists) {
-      return '已存在同名的播放列表'
-    }
-
+    if (exists) return '已存在同名的播放列表'
     return null
   }
 
-  const handleSubmit = async (e: React.FormEvent): Promise<void> => {
-    e.preventDefault()
-
-    const validationError = validateName(name)
-    if (validationError) {
-      setLocalError(validationError)
-      return
-    }
-
-    setIsSubmitting(true)
-    setLocalError(null)
-
-    try {
-      await createPlaylist(name.trim())
-
-      // Find the newly created playlist
-      const newPlaylist = usePlaylistStore
-        .getState()
-        .playlists.find((p) => p.name.toLowerCase() === name.trim().toLowerCase())
-
-      if (onCreated && newPlaylist) {
-        onCreated(newPlaylist.id)
-      }
-
-      onClose()
-    } catch (err) {
-      setLocalError(err instanceof Error ? err.message : '创建播放列表失败')
-    } finally {
-      setIsSubmitting(false)
-    }
-  }
-
-  const handleClose = (): void => {
-    if (!isSubmitting) {
-      onClose()
-    }
-  }
-
-  const handleKeyDown = (e: React.KeyboardEvent): void => {
-    if (e.key === 'Escape' && !isSubmitting) {
-      onClose()
-    }
-  }
-
-  const handleNameChange = (e: React.ChangeEvent<HTMLInputElement>): void => {
-    setName(e.target.value)
-    // Clear error when user starts typing
-    if (localError) {
-      setLocalError(null)
-    }
-  }
-
-  if (!isOpen) {
-    return null
-  }
+  if (!isOpen) return null
 
   const displayError = localError || error
 
   return (
     <div
       className="fixed inset-0 z-50 flex items-center justify-center bg-black/60 backdrop-blur-sm"
-      onClick={handleClose}
-      onKeyDown={handleKeyDown}
+      onClick={() => {
+        if (!isSubmitting) onClose()
+      }}
+      onKeyDown={(e) => {
+        if (e.key === 'Escape' && !isSubmitting) onClose()
+      }}
       role="dialog"
       aria-modal="true"
       aria-labelledby="create-playlist-title"
     >
-      <div
-        className="w-full max-w-md rounded-xl border border-zinc-200 bg-white shadow-2xl dark:border-zinc-700 dark:bg-zinc-900"
-        onClick={(e) => e.stopPropagation()}
-      >
-        {/* Header */}
-        <div className="flex items-center justify-between border-b border-zinc-200 px-6 py-4 dark:border-zinc-800">
+      <div className="glass-panel w-full max-w-md rounded-2xl" onClick={(e) => e.stopPropagation()}>
+        <div className="flex items-center justify-between border-b border-zinc-200/70 px-6 py-4 dark:border-zinc-700/70">
           <div className="flex items-center gap-3">
-            <div className="flex h-10 w-10 items-center justify-center rounded-lg bg-gradient-to-br from-purple-600 to-pink-500 text-white">
+            <div className="flex h-10 w-10 items-center justify-center rounded-lg bg-gradient-to-br from-orange-500 to-amber-500 text-white">
               <PlaylistIcon />
             </div>
-            <h2
-              id="create-playlist-title"
-              className="text-lg font-semibold text-zinc-900 dark:text-zinc-100"
-            >
+            <h2 id="create-playlist-title" className="text-lg font-semibold text-zinc-900 dark:text-zinc-100">
               创建播放列表
             </h2>
           </div>
           <button
-            onClick={handleClose}
+            onClick={() => {
+              if (!isSubmitting) onClose()
+            }}
             disabled={isSubmitting}
-            className="flex h-8 w-8 items-center justify-center rounded-md text-zinc-500 transition-colors hover:bg-zinc-100 hover:text-zinc-700 disabled:cursor-not-allowed disabled:opacity-50 dark:text-zinc-400 dark:hover:bg-zinc-800 dark:hover:text-zinc-100"
+            className="interactive-soft focus-ring flex h-8 w-8 items-center justify-center rounded-lg text-zinc-600 hover:bg-zinc-200/60 hover:text-zinc-800 disabled:cursor-not-allowed disabled:opacity-50 dark:text-zinc-300 dark:hover:bg-zinc-800 dark:hover:text-zinc-100"
             aria-label="关闭"
           >
             <CloseIcon />
           </button>
         </div>
 
-        {/* Content */}
-        <form onSubmit={handleSubmit} className="p-6">
+        <form
+          onSubmit={async (e) => {
+            e.preventDefault()
+            const validationError = validateName(name)
+            if (validationError) {
+              setLocalError(validationError)
+              return
+            }
+
+            setIsSubmitting(true)
+            setLocalError(null)
+
+            try {
+              await createPlaylist(name.trim())
+              const newPlaylist = usePlaylistStore
+                .getState()
+                .playlists.find((p) => p.name.toLowerCase() === name.trim().toLowerCase())
+
+              if (onCreated && newPlaylist) onCreated(newPlaylist.id)
+              onClose()
+            } catch (err) {
+              setLocalError(err instanceof Error ? err.message : '创建播放列表失败')
+            } finally {
+              setIsSubmitting(false)
+            }
+          }}
+          className="p-6"
+        >
           <div className="space-y-4">
             <div>
-              <label
-                htmlFor="playlist-name"
-                className="mb-2 block text-sm font-medium text-zinc-700 dark:text-zinc-300"
-              >
+              <label htmlFor="playlist-name" className="mb-2 block text-sm font-medium text-zinc-700 dark:text-zinc-300">
                 播放列表名称
               </label>
               <input
@@ -218,39 +144,39 @@ export function CreatePlaylistDialog({
                 id="playlist-name"
                 type="text"
                 value={name}
-                onChange={handleNameChange}
+                onChange={(e) => {
+                  setName(e.target.value)
+                  if (localError) setLocalError(null)
+                }}
                 disabled={isSubmitting}
-                className={`w-full rounded-lg border bg-white px-4 py-3 text-zinc-900 placeholder-zinc-400 transition-colors focus:outline-none disabled:cursor-not-allowed disabled:opacity-50 dark:bg-zinc-800 dark:text-zinc-100 dark:placeholder-zinc-500 ${
-                  displayError
-                    ? 'border-red-500 focus:border-red-500'
-                    : 'border-zinc-300 focus:border-orange-500 dark:border-zinc-700 dark:focus:border-zinc-500'
+                className={`glass-soft focus-ring w-full rounded-xl px-4 py-3 text-zinc-900 placeholder-zinc-400 disabled:cursor-not-allowed disabled:opacity-50 dark:text-zinc-100 dark:placeholder-zinc-500 ${
+                  displayError ? 'border-red-500' : ''
                 }`}
                 placeholder="输入播放列表名称"
                 maxLength={100}
                 autoComplete="off"
               />
-              {displayError && <p className="mt-2 text-sm text-red-400">{displayError}</p>}
+              {displayError && <p className="mt-2 text-sm text-red-500 dark:text-red-400">{displayError}</p>}
             </div>
 
-            <p className="text-xs text-zinc-500 dark:text-zinc-500">
-              创建后，你可以从音乐库中添加歌曲到这个播放列表
-            </p>
+            <p className="text-xs text-zinc-500 dark:text-zinc-400">创建后，你可以从音乐库中添加歌曲到这个播放列表</p>
           </div>
 
-          {/* Actions */}
           <div className="mt-6 flex justify-end gap-3">
             <button
               type="button"
-              onClick={handleClose}
+              onClick={() => {
+                if (!isSubmitting) onClose()
+              }}
               disabled={isSubmitting}
-              className="rounded-lg px-4 py-2 text-sm font-medium text-zinc-600 transition-colors hover:text-zinc-900 disabled:cursor-not-allowed disabled:opacity-50 dark:text-zinc-400 dark:hover:text-zinc-100"
+              className="interactive-soft rounded-xl px-4 py-2 text-sm font-medium text-zinc-600 hover:text-zinc-900 disabled:cursor-not-allowed disabled:opacity-50 dark:text-zinc-300 dark:hover:text-zinc-100"
             >
               取消
             </button>
             <button
               type="submit"
               disabled={isSubmitting || !name.trim()}
-              className="rounded-lg bg-green-600 px-4 py-2 text-sm font-medium text-white transition-colors hover:bg-green-500 disabled:cursor-not-allowed disabled:opacity-50"
+              className="interactive-soft focus-ring rounded-xl bg-orange-600 px-4 py-2 text-sm font-medium text-white hover:bg-orange-500 disabled:cursor-not-allowed disabled:opacity-50"
             >
               {isSubmitting ? '创建中...' : '创建'}
             </button>

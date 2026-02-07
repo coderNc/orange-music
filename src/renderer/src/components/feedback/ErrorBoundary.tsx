@@ -11,10 +11,6 @@ interface ErrorBoundaryState {
   error: Error | null
 }
 
-/**
- * Global error boundary component for catching React errors
- * Implements Requirements 11.5 - Application crash recovery
- */
 export class ErrorBoundary extends React.Component<ErrorBoundaryProps, ErrorBoundaryState> {
   constructor(props: ErrorBoundaryProps) {
     super(props)
@@ -26,10 +22,7 @@ export class ErrorBoundary extends React.Component<ErrorBoundaryProps, ErrorBoun
   }
 
   componentDidCatch(error: Error, errorInfo: React.ErrorInfo): void {
-    // Log error for debugging
     console.error('ErrorBoundary caught an error:', error, errorInfo)
-
-    // Call optional error handler
     this.props.onError?.(error, errorInfo)
   }
 
@@ -43,24 +36,14 @@ export class ErrorBoundary extends React.Component<ErrorBoundaryProps, ErrorBoun
 
   render(): React.ReactNode {
     if (this.state.hasError) {
-      // Use custom fallback if provided
-      if (this.props.fallback) {
-        return this.props.fallback
-      }
+      if (this.props.fallback) return this.props.fallback
 
-      // Default error UI
       return (
-        <div className="flex h-screen w-screen flex-col items-center justify-center bg-zinc-900 text-zinc-100 p-8">
-          <div className="max-w-md text-center">
-            {/* Error icon */}
+        <div className="stage-gradient flex h-screen w-screen flex-col items-center justify-center bg-zinc-50 p-8 text-zinc-900 dark:bg-zinc-900 dark:text-zinc-100">
+          <div className="glass-panel max-w-md rounded-3xl p-6 text-center">
             <div className="mb-6 flex justify-center">
-              <div className="flex h-16 w-16 items-center justify-center rounded-full bg-red-500/10">
-                <svg
-                  className="h-8 w-8 text-red-400"
-                  fill="none"
-                  viewBox="0 0 24 24"
-                  stroke="currentColor"
-                >
+              <div className="flex h-16 w-16 items-center justify-center rounded-full bg-red-500/10 text-red-500 dark:text-red-400">
+                <svg className="h-8 w-8" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                   <path
                     strokeLinecap="round"
                     strokeLinejoin="round"
@@ -71,19 +54,15 @@ export class ErrorBoundary extends React.Component<ErrorBoundaryProps, ErrorBoun
               </div>
             </div>
 
-            {/* Error message */}
-            <h1 className="mb-2 text-xl font-bold text-zinc-100">出现了一些问题</h1>
-            <p className="mb-6 text-sm text-zinc-400">
-              应用程序遇到了意外错误。您可以尝试重试或重新加载应用。
-            </p>
+            <h1 className="mb-2 text-xl font-bold text-zinc-900 dark:text-zinc-100">出现了一些问题</h1>
+            <p className="mb-6 text-sm text-zinc-600 dark:text-zinc-300">应用程序遇到了意外错误。可以尝试重试或重新加载应用。</p>
 
-            {/* Error details (collapsible) */}
             {this.state.error && (
               <details className="mb-6 text-left">
-                <summary className="cursor-pointer text-sm text-zinc-500 hover:text-zinc-400">
+                <summary className="cursor-pointer text-sm text-zinc-500 hover:text-zinc-700 dark:text-zinc-400 dark:hover:text-zinc-200">
                   查看错误详情
                 </summary>
-                <pre className="mt-2 overflow-auto rounded-lg bg-zinc-800 p-3 text-xs text-red-400">
+                <pre className="mt-2 max-h-48 overflow-auto rounded-xl bg-zinc-900/90 p-3 text-xs text-red-300 dark:bg-zinc-950">
                   {this.state.error.message}
                   {this.state.error.stack && (
                     <>
@@ -95,17 +74,16 @@ export class ErrorBoundary extends React.Component<ErrorBoundaryProps, ErrorBoun
               </details>
             )}
 
-            {/* Action buttons */}
             <div className="flex justify-center gap-3">
               <button
                 onClick={this.handleRetry}
-                className="rounded-lg bg-zinc-800 px-4 py-2 text-sm font-medium text-zinc-300 transition-colors hover:bg-zinc-700"
+                className="interactive-soft focus-ring rounded-xl bg-zinc-200/80 px-4 py-2 text-sm font-medium text-zinc-700 hover:bg-zinc-200 dark:bg-zinc-800 dark:text-zinc-200 dark:hover:bg-zinc-700"
               >
                 重试
               </button>
               <button
                 onClick={this.handleReload}
-                className="rounded-lg bg-emerald-600 px-4 py-2 text-sm font-medium text-white transition-colors hover:bg-emerald-500"
+                className="interactive-soft focus-ring rounded-xl bg-orange-600 px-4 py-2 text-sm font-medium text-white hover:bg-orange-500"
               >
                 重新加载
               </button>
@@ -119,9 +97,6 @@ export class ErrorBoundary extends React.Component<ErrorBoundaryProps, ErrorBoun
   }
 }
 
-/**
- * Hook for programmatically triggering error boundary
- */
 export function useErrorHandler(): (error: Error) => void {
   const [, setError] = React.useState<Error | null>(null)
 

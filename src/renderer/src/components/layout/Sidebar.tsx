@@ -90,7 +90,6 @@ export function Sidebar(): React.JSX.Element {
   const toggleSidebar = useUIStore((state) => state.toggleSidebar)
   const toggleQueue = useUIStore((state) => state.toggleQueue)
 
-  // Get scanning state from library store
   const isScanning = useLibraryStore((state) => state.isScanning)
   const scanProgress = useLibraryStore((state) => state.scanProgress)
 
@@ -99,32 +98,27 @@ export function Sidebar(): React.JSX.Element {
   const handleNavClick = (item: NavItem): void => {
     if (item.id === 'queue') {
       toggleQueue()
-    } else {
-      setCurrentView(item.id)
+      return
     }
+    setCurrentView(item.id)
   }
 
   return (
     <aside
-      className={`fixed left-0 top-0 z-10 flex h-[calc(100vh-80px)] flex-col border-r transition-all duration-200 ${
+      className={`fixed left-0 top-0 z-10 flex bottom-20 flex-col border-r transition-all duration-200 ${
         sidebarCollapsed ? 'w-16' : 'w-56'
-      } ${
-        isMacOS
-          ? 'border-white/20 bg-white/30 backdrop-blur-xl dark:border-zinc-700/50 dark:bg-zinc-900/30'
-          : 'border-zinc-200 bg-white dark:border-zinc-800 dark:bg-zinc-950'
-      }`}
+      } ${isMacOS ? 'glass-soft border-white/20 dark:border-zinc-700/40' : 'surface-card border-zinc-200 dark:border-zinc-800'}`}
       style={isMacOS ? { paddingTop: '38px' } : undefined}
     >
-      {/* Logo / App title */}
-      <div className="flex h-14 items-center border-b border-zinc-200 px-4 dark:border-zinc-800">
+      <div className="flex h-14 items-center border-b border-zinc-200/70 px-4 dark:border-zinc-700/60">
         {!sidebarCollapsed && (
-          <h1 className="truncate text-lg font-bold text-zinc-900 dark:text-zinc-100">
+          <h1 className="truncate text-lg font-semibold tracking-tight text-zinc-900 dark:text-zinc-100">
             橘子的晴天
           </h1>
         )}
         <button
           onClick={toggleSidebar}
-          className={`flex h-8 w-8 items-center justify-center rounded-md text-zinc-500 transition-colors hover:bg-zinc-100 hover:text-zinc-900 dark:text-zinc-400 dark:hover:bg-zinc-800 dark:hover:text-zinc-100 ${
+          className={`interactive-soft focus-ring flex h-8 w-8 items-center justify-center rounded-xl text-zinc-500 hover:bg-zinc-200/60 hover:text-zinc-900 dark:text-zinc-300 dark:hover:bg-zinc-800/70 dark:hover:text-zinc-100 ${
             sidebarCollapsed ? 'mx-auto' : 'ml-auto'
           }`}
           title={sidebarCollapsed ? '展开侧边栏' : '折叠侧边栏'}
@@ -149,14 +143,12 @@ export function Sidebar(): React.JSX.Element {
         </button>
       </div>
 
-      {/* Navigation */}
       <nav className="flex-1 overflow-y-auto py-4">
-        {/* Scan progress indicator */}
         {isScanning && (
           <div className={`mb-3 px-3 ${sidebarCollapsed ? 'flex justify-center' : ''}`}>
             {sidebarCollapsed ? (
               <div
-                className="h-3 w-3 animate-spin rounded-full border-2 border-zinc-600 border-t-green-500"
+                className="h-3 w-3 animate-spin rounded-full border-2 border-zinc-600 border-t-orange-500"
                 title={`扫描中: ${scanProgress.current}/${scanProgress.total}`}
               />
             ) : (
@@ -168,19 +160,23 @@ export function Sidebar(): React.JSX.Element {
           {navItems.map((item) => {
             const isActive = item.id === currentView
             const isQueueItem = item.id === 'queue'
-
             return (
               <li key={item.id}>
                 <button
                   onClick={() => handleNavClick(item)}
-                  className={`flex w-full items-center rounded-md px-3 py-2 text-sm font-medium transition-colors ${
+                  data-active={isActive && !isQueueItem}
+                  className={`nav-liquid interactive-soft focus-ring flex w-full items-center rounded-xl px-3 py-2 text-sm font-medium transition-colors ${
                     isActive && !isQueueItem
-                      ? 'bg-zinc-100 text-zinc-900 dark:bg-zinc-800 dark:text-zinc-100'
-                      : 'text-zinc-500 hover:bg-zinc-100 hover:text-zinc-900 dark:text-zinc-400 dark:hover:bg-zinc-800/50 dark:hover:text-zinc-100'
+                      ? 'text-zinc-900 dark:text-zinc-50'
+                      : 'text-zinc-600 hover:bg-zinc-200/60 hover:text-zinc-900 dark:text-zinc-300 dark:hover:bg-zinc-800/50 dark:hover:text-zinc-100'
                   } ${sidebarCollapsed ? 'justify-center' : 'justify-start gap-3'}`}
                   title={sidebarCollapsed ? item.label : undefined}
                 >
-                  <span className="flex-shrink-0">{item.icon}</span>
+                  <span
+                    className={`flex-shrink-0 transition-transform duration-150 ${isActive && !isQueueItem ? 'scale-105' : 'group-hover:scale-[1.02]'}`}
+                  >
+                    {item.icon}
+                  </span>
                   {!sidebarCollapsed && <span className="truncate">{item.label}</span>}
                 </button>
               </li>
@@ -189,11 +185,10 @@ export function Sidebar(): React.JSX.Element {
         </ul>
       </nav>
 
-      {/* Bottom section - theme toggle and version */}
-      <div className="border-t border-zinc-200 p-2 dark:border-zinc-800">
+      <div className="border-t border-zinc-200/70 p-2 dark:border-zinc-700/60">
         <ThemeToggle collapsed={sidebarCollapsed} />
         {!sidebarCollapsed && (
-          <p className="px-3 py-2 text-xs text-zinc-400 dark:text-zinc-500">橘子的晴天 v1.0</p>
+          <p className="px-3 py-2 text-xs text-zinc-500 dark:text-zinc-400">橘子的晴天 v1.0</p>
         )}
       </div>
     </aside>

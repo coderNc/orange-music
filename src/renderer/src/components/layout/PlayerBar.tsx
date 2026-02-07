@@ -5,41 +5,49 @@ import { PlaybackControls, ProgressBar, VolumeControl } from '@renderer/componen
 import { RotatingAlbumArt } from '@renderer/components/player/RotatingAlbumArt'
 import { AudioVisualizer } from '@renderer/components/player/AudioVisualizer'
 import { useColorExtractor } from '@renderer/hooks/useColorExtractor'
+import { useTheme } from '@renderer/hooks'
 
-/**
- * PlayerBar component
- *
- * Fixed bottom bar displaying current track info, playback controls,
- * progress bar, and volume control.
- *
- * Requirements: 8.1, 8.4
- */
 export function PlayerBar(): React.JSX.Element {
   const currentTrack = usePlayerStore((state) => state.currentTrack)
   const isPlaying = usePlayerStore((state) => state.isPlaying)
   const lyricsVisible = useUIStore((state) => state.lyricsVisible)
   const toggleLyrics = useUIStore((state) => state.toggleLyrics)
   const { dominantColor, palette } = useColorExtractor(currentTrack?.coverUrl)
+  const { resolvedTheme } = useTheme()
+
+  React.useEffect(() => {
+    const root = document.documentElement
+    const rgbMatch = dominantColor.match(/\d+/g)
+
+    if (!rgbMatch || rgbMatch.length < 3) {
+      root.style.setProperty('--ambient-rgb', '249, 115, 22')
+      return
+    }
+
+    root.style.setProperty('--ambient-rgb', `${rgbMatch[0]}, ${rgbMatch[1]}, ${rgbMatch[2]}`)
+  }, [dominantColor])
 
   return (
     <div
-      className="fixed bottom-0 left-0 right-0 z-20 flex h-20 items-center px-4 player-bar-glass dynamic-bg relative"
+      data-playing={isPlaying}
+      className="fixed bottom-0 left-0 right-0 z-20 flex h-20 items-center px-4 player-bar-glass dynamic-bg player-breath relative"
       style={{
-        background: `linear-gradient(135deg, ${dominantColor}20 0%, transparent 50%), linear-gradient(to right, ${palette[0]}10, ${palette[1] || palette[0]}10)`
+        backgroundImage:
+          resolvedTheme === 'dark'
+            ? `linear-gradient(120deg, ${dominantColor}14 0%, transparent 42%), linear-gradient(to right, ${palette[0]}0D, ${palette[1] || palette[0]}08)`
+            : `linear-gradient(120deg, ${dominantColor}20 0%, transparent 45%), linear-gradient(to right, ${palette[0]}18, ${palette[1] || palette[0]}10)`
       }}
     >
-      {/* Audio visualizer background */}
       <div className="absolute inset-0 flex items-end justify-center pointer-events-none overflow-hidden">
         <AudioVisualizer
           isPlaying={isPlaying}
-          barCount={48}
-          barColor="rgba(249, 115, 22, 0.2)"
+          barCount={54}
+          barColor={resolvedTheme === 'dark' ? 'rgba(249, 115, 22, 0.14)' : 'rgba(249, 115, 22, 0.22)'}
           className="w-full"
         />
       </div>
 
-      {/* Left section - Track info */}
-      <div className="flex w-1/4 min-w-0 items-center gap-3 relative z-10">
+      <div className="relative z-10 flex w-1/4 min-w-0 items-center gap-3">
         <RotatingAlbumArt
           src={currentTrack?.coverUrl}
           alt={currentTrack?.album || 'Album art'}
@@ -47,29 +55,27 @@ export function PlayerBar(): React.JSX.Element {
           size="md"
         />
         <div className="min-w-0 flex-1">
-          <p className="truncate text-sm font-medium text-zinc-900 dark:text-zinc-100">
+          <p className="truncate text-sm font-semibold text-zinc-900 dark:text-zinc-50">
             {currentTrack?.title || '未播放'}
           </p>
-          <p className="truncate text-xs text-zinc-500 dark:text-zinc-400">
+          <p className="truncate text-xs text-zinc-600 dark:text-zinc-300">
             {currentTrack?.artist || '选择一首歌曲开始播放'}
           </p>
         </div>
       </div>
 
-      {/* Center section - Playback controls and progress */}
-      <div className="flex flex-1 flex-col items-center justify-center gap-1 relative z-10">
+      <div className="relative z-10 flex flex-1 flex-col items-center justify-center gap-1">
         <PlaybackControls />
         <ProgressBar maxWidthClass="max-w-xl" />
       </div>
 
-      {/* Right section - Volume control and lyrics button */}
-      <div className="flex w-1/4 items-center justify-end gap-2 relative z-10">
+      <div className="relative z-10 flex w-1/4 items-center justify-end gap-2">
         <button
           onClick={toggleLyrics}
-          className={`rounded-md p-2 transition-colors ${
+          className={`interactive-soft focus-ring rounded-xl p-2 transition-colors ${
             lyricsVisible
-              ? 'bg-orange-100 text-orange-600 dark:bg-orange-900/30 dark:text-orange-400'
-              : 'text-zinc-500 hover:bg-zinc-100 hover:text-zinc-700 dark:text-zinc-400 dark:hover:bg-zinc-800 dark:hover:text-zinc-200'
+              ? 'bg-orange-100/80 text-orange-700 dark:bg-orange-500/25 dark:text-orange-300'
+              : 'text-zinc-600 hover:bg-zinc-200/60 hover:text-zinc-800 dark:text-zinc-300 dark:hover:bg-zinc-800/70 dark:hover:text-zinc-100'
           }`}
           title="歌词"
         >

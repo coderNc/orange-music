@@ -5,18 +5,10 @@ import { useLibraryStore } from '@renderer/stores/library-store'
 import { usePlayerStore } from '@renderer/stores/player-store'
 import { LazyImage } from '@renderer/components/common'
 
-/**
- * Default artist avatar placeholder
- */
 function DefaultArtistAvatar(): React.JSX.Element {
   return (
     <div className="flex h-12 w-12 items-center justify-center rounded-full bg-zinc-100 dark:bg-zinc-800">
-      <svg
-        className="h-6 w-6 text-zinc-500 dark:text-zinc-600"
-        fill="none"
-        viewBox="0 0 24 24"
-        stroke="currentColor"
-      >
+      <svg className="h-6 w-6 text-zinc-500 dark:text-zinc-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
         <path
           strokeLinecap="round"
           strokeLinejoin="round"
@@ -28,9 +20,6 @@ function DefaultArtistAvatar(): React.JSX.Element {
   )
 }
 
-/**
- * Play icon
- */
 function PlayIcon(): React.JSX.Element {
   return (
     <svg className="h-5 w-5" fill="currentColor" viewBox="0 0 24 24">
@@ -45,24 +34,14 @@ interface ArtistItemProps {
   onClick: () => void
 }
 
-/**
- * Individual artist item
- */
 function ArtistItem({ artist, onPlay, onClick }: ArtistItemProps): React.JSX.Element {
-  // Get the first album cover as artist avatar
   const avatarUrl = artist.albums[0]?.coverData
-
-  const handlePlayClick = (e: React.MouseEvent): void => {
-    e.stopPropagation()
-    onPlay()
-  }
 
   return (
     <div
-      className="group flex cursor-pointer items-center gap-4 rounded-lg p-3 transition-colors hover:bg-zinc-100 dark:hover:bg-zinc-800/50"
+      className="surface-card interactive-soft group scroll-parallax flex cursor-pointer items-center gap-4 rounded-2xl p-3"
       onClick={onClick}
     >
-      {/* Artist avatar with lazy loading and fallback */}
       <LazyImage
         src={avatarUrl}
         alt={artist.name}
@@ -70,20 +49,19 @@ function ArtistItem({ artist, onPlay, onClick }: ArtistItemProps): React.JSX.Ele
         fallback={<DefaultArtistAvatar />}
       />
 
-      {/* Artist info */}
       <div className="min-w-0 flex-1">
-        <h3 className="truncate text-sm font-medium text-zinc-900 dark:text-zinc-100">
-          {artist.name}
-        </h3>
-        <p className="text-xs text-zinc-600 dark:text-zinc-400">
+        <h3 className="truncate text-sm font-semibold text-zinc-900 dark:text-zinc-100">{artist.name}</h3>
+        <p className="text-xs text-zinc-600 dark:text-zinc-300">
           {artist.albumCount} 张专辑 • {artist.trackCount} 首歌曲
         </p>
       </div>
 
-      {/* Play button */}
       <button
-        onClick={handlePlayClick}
-        className="flex h-10 w-10 items-center justify-center rounded-full bg-green-500 text-zinc-900 opacity-0 transition-opacity group-hover:opacity-100"
+        onClick={(e) => {
+          e.stopPropagation()
+          onPlay()
+        }}
+        className="interactive-soft focus-ring flex h-10 w-10 items-center justify-center rounded-full bg-orange-500 text-white opacity-0 shadow-lg shadow-orange-500/25 transition-opacity group-hover:opacity-100"
         title="播放所有歌曲"
       >
         <PlayIcon />
@@ -92,19 +70,11 @@ function ArtistItem({ artist, onPlay, onClick }: ArtistItemProps): React.JSX.Ele
   )
 }
 
-/**
- * Empty state when no artists are available
- */
 function EmptyState(): React.JSX.Element {
   return (
-    <div className="flex flex-col items-center justify-center py-16 text-center">
+    <div className="glass-soft flex flex-col items-center justify-center rounded-2xl py-16 text-center">
       <div className="mb-4 flex h-16 w-16 items-center justify-center rounded-full bg-zinc-100 dark:bg-zinc-800">
-        <svg
-          className="h-8 w-8 text-zinc-500 dark:text-zinc-400"
-          fill="none"
-          viewBox="0 0 24 24"
-          stroke="currentColor"
-        >
+        <svg className="h-8 w-8 text-zinc-500 dark:text-zinc-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
           <path
             strokeLinecap="round"
             strokeLinejoin="round"
@@ -114,26 +84,16 @@ function EmptyState(): React.JSX.Element {
         </svg>
       </div>
       <h3 className="mb-2 text-lg font-medium text-zinc-900 dark:text-zinc-100">没有艺术家</h3>
-      <p className="text-sm text-zinc-600 dark:text-zinc-400">添加音乐文件夹来查看艺术家</p>
+      <p className="text-sm text-zinc-600 dark:text-zinc-300">添加音乐文件夹来查看艺术家</p>
     </div>
   )
 }
 
 export interface ArtistListProps {
-  /** Callback when an artist is selected */
   onSelectArtist?: (artist: Artist) => void
-  /** Height of the list container */
   height?: number | string
 }
 
-/**
- * ArtistList component
- *
- * List view of artists with play functionality.
- * Uses virtualization for performance with large libraries.
- *
- * Requirements: 5.4, 5.5
- */
 export function ArtistList({
   onSelectArtist,
   height = 'calc(100vh - 200px)'
@@ -144,19 +104,6 @@ export function ArtistList({
 
   const artists = getArtists()
 
-  const handlePlayArtist = (artist: Artist): void => {
-    const tracks = getTracksByArtist(artist.name)
-    if (tracks.length > 0) {
-      setQueue(tracks, 0)
-    }
-  }
-
-  const handleSelectArtist = (artist: Artist): void => {
-    if (onSelectArtist) {
-      onSelectArtist(artist)
-    }
-  }
-
   if (artists.length === 0) {
     return <EmptyState />
   }
@@ -164,9 +111,7 @@ export function ArtistList({
   return (
     <div className="space-y-4">
       <div className="flex items-center justify-between">
-        <h3 className="text-sm font-medium text-zinc-600 dark:text-zinc-400">
-          艺术家 ({artists.length})
-        </h3>
+        <h3 className="text-sm font-medium text-zinc-600 dark:text-zinc-300">艺术家 ({artists.length})</h3>
       </div>
 
       <Virtuoso
@@ -175,11 +120,16 @@ export function ArtistList({
         itemContent={(index) => {
           const artist = artists[index]
           return (
-            <ArtistItem
+            <div className="pb-3">
+              <ArtistItem
               artist={artist}
-              onPlay={() => handlePlayArtist(artist)}
-              onClick={() => handleSelectArtist(artist)}
-            />
+              onPlay={() => {
+                const tracks = getTracksByArtist(artist.name)
+                if (tracks.length > 0) setQueue(tracks, 0)
+              }}
+              onClick={() => onSelectArtist?.(artist)}
+              />
+            </div>
           )
         }}
       />

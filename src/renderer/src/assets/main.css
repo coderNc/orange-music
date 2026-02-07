@@ -92,3 +92,25 @@
   background: rgba(24, 24, 27, 0.85);
   border-top: 1px solid rgba(255, 255, 255, 0.1);
 }
+
+.macos-vibrancy .player-bar-glass {
+  background: rgba(255, 255, 255, 0.3);
+  backdrop-filter: none;
+  -webkit-backdrop-filter: none;
+  border-top: 1px solid rgba(255, 255, 255, 0.15);
+}
+
+.dark.macos-vibrancy .player-bar-glass {
+  background: rgba(24, 24, 27, 0.3);
+  border-top: 1px solid rgba(255, 255, 255, 0.08);
+}
+
+.macos-vibrancy .glass-panel {
+  background: rgba(255, 255, 255, 0.2);
+  backdrop-filter: none;
+  -webkit-backdrop-filter: none;
+}
+
+.dark.macos-vibrancy .glass-panel {
+  background: rgba(24, 24, 27, 0.2);
+}

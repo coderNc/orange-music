@@ -5,6 +5,19 @@ import icon from '../../resources/icon.png?asset'
 import { registerIPCHandlers } from './ipc'
 
 function createWindow(): void {
+  // macOS-specific window options for native vibrancy (frosted glass effect)
+  const macOSOptions =
+    process.platform === 'darwin'
+      ? {
+          titleBarStyle: 'hiddenInset' as const,
+          trafficLightPosition: { x: 15, y: 13 },
+          vibrancy: 'under-window' as const,
+          visualEffectState: 'active' as const,
+          transparent: true,
+          backgroundColor: '#00000000'
+        }
+      : {}
+
   // Create the browser window.
   const mainWindow = new BrowserWindow({
     width: 900,
@@ -12,6 +25,7 @@ function createWindow(): void {
     show: false,
     autoHideMenuBar: true,
     ...(process.platform === 'linux' ? { icon } : {}),
+    ...macOSOptions,
     webPreferences: {
       preload: join(__dirname, '../preload/index.mjs'),
       sandbox: false,

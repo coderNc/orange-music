@@ -94,6 +94,8 @@ export function Sidebar(): React.JSX.Element {
   const isScanning = useLibraryStore((state) => state.isScanning)
   const scanProgress = useLibraryStore((state) => state.scanProgress)
 
+  const isMacOS = navigator.platform.toLowerCase().includes('mac')
+
   const handleNavClick = (item: NavItem): void => {
     if (item.id === 'queue') {
       toggleQueue()
@@ -104,9 +106,14 @@ export function Sidebar(): React.JSX.Element {
 
   return (
     <aside
-      className={`fixed left-0 top-0 z-10 flex h-[calc(100vh-80px)] flex-col border-r border-zinc-200 bg-white transition-all duration-200 dark:border-zinc-800 dark:bg-zinc-950 ${
+      className={`fixed left-0 top-0 z-10 flex h-[calc(100vh-80px)] flex-col border-r transition-all duration-200 ${
         sidebarCollapsed ? 'w-16' : 'w-56'
+      } ${
+        isMacOS
+          ? 'border-white/20 bg-white/30 backdrop-blur-xl dark:border-zinc-700/50 dark:bg-zinc-900/30'
+          : 'border-zinc-200 bg-white dark:border-zinc-800 dark:bg-zinc-950'
       }`}
+      style={isMacOS ? { paddingTop: '38px' } : undefined}
     >
       {/* Logo / App title */}
       <div className="flex h-14 items-center border-b border-zinc-200 px-4 dark:border-zinc-800">

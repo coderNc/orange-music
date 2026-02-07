@@ -127,7 +127,7 @@ const QueueItem = React.memo(
       <div
         className={`group flex items-center gap-2 rounded-md px-2 py-1.5 transition-colors ${
           isDragging ? 'opacity-50' : ''
-        } ${isCurrentTrack ? 'bg-zinc-800/80' : 'hover:bg-zinc-800/50'}`}
+        } ${isCurrentTrack ? 'bg-orange-100/80 dark:bg-zinc-800/80' : 'hover:bg-zinc-100 dark:hover:bg-zinc-800/50'}`}
         draggable
         onDragStart={(e) => onDragStart(e, index)}
         onDragOver={(e) => onDragOver(e, index)}
@@ -136,7 +136,7 @@ const QueueItem = React.memo(
         onDoubleClick={onDoubleClick}
       >
         {/* Drag handle */}
-        <div className="cursor-grab text-zinc-600 opacity-0 transition-opacity group-hover:opacity-100 active:cursor-grabbing">
+        <div className="cursor-grab text-zinc-500 dark:text-zinc-600 opacity-0 transition-opacity group-hover:opacity-100 active:cursor-grabbing">
           <DragHandleIcon />
         </div>
 
@@ -145,7 +145,9 @@ const QueueItem = React.memo(
           {isCurrentTrack && isPlaying ? (
             <PlayingIndicator />
           ) : (
-            <span className={`text-xs ${isCurrentTrack ? 'text-green-500' : 'text-zinc-500'}`}>
+            <span
+              className={`text-xs ${isCurrentTrack ? 'text-green-500' : 'text-zinc-500 dark:text-zinc-400'}`}
+            >
               {index + 1}
             </span>
           )}
@@ -162,16 +164,18 @@ const QueueItem = React.memo(
         {/* Track info */}
         <div className="min-w-0 flex-1">
           <p
-            className={`truncate text-sm font-medium ${isCurrentTrack ? 'text-green-500' : 'text-zinc-100'}`}
+            className={`truncate text-sm font-medium ${isCurrentTrack ? 'text-green-500' : 'text-zinc-900 dark:text-zinc-100'}`}
           >
             {track.title}
           </p>
-          <p className="truncate text-xs text-zinc-400">{track.artist}</p>
+          <p className="truncate text-xs text-zinc-500 dark:text-zinc-400">{track.artist}</p>
         </div>
 
         {/* Duration */}
         <div className="flex-shrink-0 text-right">
-          <span className="text-xs text-zinc-500">{formatTime(track.duration)}</span>
+          <span className="text-xs text-zinc-500 dark:text-zinc-400">
+            {formatTime(track.duration)}
+          </span>
         </div>
 
         {/* Remove button */}
@@ -180,7 +184,7 @@ const QueueItem = React.memo(
             e.stopPropagation()
             onRemove()
           }}
-          className="flex h-6 w-6 flex-shrink-0 items-center justify-center rounded text-zinc-600 opacity-0 transition-all hover:bg-zinc-700 hover:text-red-400 group-hover:opacity-100"
+          className="flex h-6 w-6 flex-shrink-0 items-center justify-center rounded text-zinc-500 dark:text-zinc-600 opacity-0 transition-all hover:bg-zinc-100 hover:text-red-600 dark:hover:bg-zinc-700 dark:hover:text-red-400 group-hover:opacity-100"
           title="从队列中移除"
         >
           <DeleteIcon />
@@ -205,9 +209,9 @@ const QueueItem = React.memo(
 function EmptyQueueState(): React.JSX.Element {
   return (
     <div className="flex flex-col items-center justify-center py-12 text-center">
-      <div className="mb-4 flex h-12 w-12 items-center justify-center rounded-full bg-zinc-800">
+      <div className="mb-4 flex h-12 w-12 items-center justify-center rounded-full bg-zinc-100 dark:bg-zinc-800">
         <svg
-          className="h-6 w-6 text-zinc-500"
+          className="h-6 w-6 text-zinc-500 dark:text-zinc-400"
           fill="none"
           viewBox="0 0 24 24"
           stroke="currentColor"
@@ -220,8 +224,8 @@ function EmptyQueueState(): React.JSX.Element {
           />
         </svg>
       </div>
-      <h3 className="mb-1 text-sm font-medium text-zinc-100">队列为空</h3>
-      <p className="text-xs text-zinc-400">从音乐库中添加歌曲到队列</p>
+      <h3 className="mb-1 text-sm font-medium text-zinc-900 dark:text-zinc-100">队列为空</h3>
+      <p className="text-xs text-zinc-600 dark:text-zinc-400">从音乐库中添加歌曲到队列</p>
     </div>
   )
 }
@@ -235,15 +239,15 @@ const NowPlayingSection = React.memo(function NowPlayingSection(): React.JSX.Ele
 
   if (!currentTrack) {
     return (
-      <div className="border-b border-zinc-800 p-3">
+      <div className="border-b border-zinc-200 p-3 dark:border-zinc-800">
         <p className="text-xs font-medium uppercase tracking-wider text-zinc-500">正在播放</p>
-        <p className="mt-2 text-sm text-zinc-400">没有正在播放的歌曲</p>
+        <p className="mt-2 text-sm text-zinc-600 dark:text-zinc-400">没有正在播放的歌曲</p>
       </div>
     )
   }
 
   return (
-    <div className="border-b border-zinc-800 p-3">
+    <div className="border-b border-zinc-200 p-3 dark:border-zinc-800">
       <p className="mb-2 text-xs font-medium uppercase tracking-wider text-zinc-500">正在播放</p>
       <div className="flex items-center gap-3">
         {/* Album art with lazy loading */}
@@ -260,8 +264,8 @@ const NowPlayingSection = React.memo(function NowPlayingSection(): React.JSX.Ele
             {isPlaying && <PlayingIndicator />}
             <p className="truncate text-sm font-medium text-green-500">{currentTrack.title}</p>
           </div>
-          <p className="truncate text-xs text-zinc-400">{currentTrack.artist}</p>
-          <p className="truncate text-xs text-zinc-500">{currentTrack.album}</p>
+          <p className="truncate text-xs text-zinc-500 dark:text-zinc-400">{currentTrack.artist}</p>
+          <p className="truncate text-xs text-zinc-500 dark:text-zinc-500">{currentTrack.album}</p>
         </div>
       </div>
     </div>
@@ -356,13 +360,13 @@ export function QueuePanel(): React.JSX.Element {
   return (
     <div className="flex h-full flex-col">
       {/* Header */}
-      <div className="flex items-center justify-between border-b border-zinc-800 p-3">
-        <h2 className="text-lg font-semibold text-zinc-100">播放队列</h2>
+      <div className="flex items-center justify-between border-b border-zinc-200 p-3 dark:border-zinc-800">
+        <h2 className="text-lg font-semibold text-zinc-900 dark:text-zinc-100">播放队列</h2>
         <div className="flex items-center gap-1">
           {queue.length > 0 && (
             <button
               onClick={handleClearQueue}
-              className="flex h-8 items-center gap-1.5 rounded-md px-2 text-xs text-zinc-400 transition-colors hover:bg-zinc-800 hover:text-red-400"
+              className="flex h-8 items-center gap-1.5 rounded-md px-2 text-xs text-zinc-500 transition-colors hover:bg-zinc-100 hover:text-red-600 dark:text-zinc-400 dark:hover:bg-zinc-800 dark:hover:text-red-400"
               title="清空队列"
             >
               <ClearAllIcon />
@@ -371,7 +375,7 @@ export function QueuePanel(): React.JSX.Element {
           )}
           <button
             onClick={handleClose}
-            className="flex h-8 w-8 items-center justify-center rounded-md text-zinc-400 transition-colors hover:bg-zinc-800 hover:text-zinc-100"
+            className="flex h-8 w-8 items-center justify-center rounded-md text-zinc-500 transition-colors hover:bg-zinc-100 hover:text-zinc-700 dark:text-zinc-400 dark:hover:bg-zinc-800 dark:hover:text-zinc-100"
             title="关闭队列面板"
           >
             <CloseIcon />
@@ -391,7 +395,7 @@ export function QueuePanel(): React.JSX.Element {
             <p className="mb-2 text-xs font-medium uppercase tracking-wider text-zinc-500">
               接下来播放
             </p>
-            <p className="text-sm text-zinc-400">队列中没有更多歌曲</p>
+            <p className="text-sm text-zinc-600 dark:text-zinc-400">队列中没有更多歌曲</p>
           </div>
         ) : (
           <div className="h-full">
@@ -437,7 +441,7 @@ export function QueuePanel(): React.JSX.Element {
 
       {/* Footer with queue info */}
       {queue.length > 0 && (
-        <div className="border-t border-zinc-800 p-3">
+        <div className="border-t border-zinc-200 p-3 dark:border-zinc-800">
           <p className="text-xs text-zinc-500">
             {queue.length} 首歌曲 ·{' '}
             {formatTime(queue.reduce((sum, track) => sum + track.duration, 0))}

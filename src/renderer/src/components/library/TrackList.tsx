@@ -81,12 +81,14 @@ function ContextMenu({
   return (
     <div
       ref={menuRef}
-      className="fixed z-50 min-w-48 rounded-lg border border-zinc-700 bg-zinc-900 py-1 shadow-xl"
+      className="fixed z-50 min-w-48 rounded-lg border border-zinc-200 bg-white py-1 shadow-xl dark:border-zinc-700 dark:bg-zinc-900"
       style={{ left: adjustedX, top: adjustedY }}
     >
-      <div className="border-b border-zinc-800 px-3 py-2">
-        <p className="truncate text-sm font-medium text-zinc-100">{track.title}</p>
-        <p className="truncate text-xs text-zinc-400">{track.artist}</p>
+      <div className="border-b border-zinc-200 px-3 py-2 dark:border-zinc-800">
+        <p className="truncate text-sm font-medium text-zinc-900 dark:text-zinc-100">
+          {track.title}
+        </p>
+        <p className="truncate text-xs text-zinc-500 dark:text-zinc-400">{track.artist}</p>
       </div>
 
       <button
@@ -94,7 +96,7 @@ function ContextMenu({
           onPlayNext()
           onClose()
         }}
-        className="flex w-full items-center gap-2 px-3 py-2 text-left text-sm text-zinc-300 hover:bg-zinc-800"
+        className="flex w-full items-center gap-2 px-3 py-2 text-left text-sm text-zinc-700 hover:bg-zinc-100 dark:text-zinc-300 dark:hover:bg-zinc-800"
       >
         <svg className="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
           <path
@@ -112,7 +114,7 @@ function ContextMenu({
           onAddToQueue()
           onClose()
         }}
-        className="flex w-full items-center gap-2 px-3 py-2 text-left text-sm text-zinc-300 hover:bg-zinc-800"
+        className="flex w-full items-center gap-2 px-3 py-2 text-left text-sm text-zinc-700 hover:bg-zinc-100 dark:text-zinc-300 dark:hover:bg-zinc-800"
       >
         <svg className="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
           <path
@@ -127,9 +129,9 @@ function ContextMenu({
 
       {playlists.length > 0 && (
         <>
-          <div className="my-1 border-t border-zinc-800" />
+          <div className="my-1 border-t border-zinc-200 dark:border-zinc-800" />
           <div className="px-3 py-1">
-            <p className="text-xs font-medium text-zinc-500">添加到播放列表</p>
+            <p className="text-xs font-medium text-zinc-500 dark:text-zinc-500">添加到播放列表</p>
           </div>
           {playlists.map((playlist) => (
             <button
@@ -138,7 +140,7 @@ function ContextMenu({
                 onAddToPlaylist(playlist.id)
                 onClose()
               }}
-              className="flex w-full items-center gap-2 px-3 py-2 text-left text-sm text-zinc-300 hover:bg-zinc-800"
+              className="flex w-full items-center gap-2 px-3 py-2 text-left text-sm text-zinc-700 hover:bg-zinc-100 dark:text-zinc-300 dark:hover:bg-zinc-800"
             >
               <svg className="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                 <path
@@ -182,7 +184,9 @@ const TrackItem = React.memo(
     return (
       <div
         className={`group flex items-center gap-3 rounded-md px-3 py-2 transition-colors ${
-          isCurrentTrack ? 'bg-zinc-800/80' : 'hover:bg-zinc-800/50'
+          isCurrentTrack
+            ? 'bg-orange-100/80 dark:bg-zinc-800/80'
+            : 'hover:bg-zinc-100 dark:hover:bg-zinc-800/50'
         }`}
         onDoubleClick={onDoubleClick}
         onContextMenu={onContextMenu}
@@ -192,7 +196,9 @@ const TrackItem = React.memo(
           {isCurrentTrack && isPlaying ? (
             <PlayingIndicator />
           ) : (
-            <span className={`text-sm ${isCurrentTrack ? 'text-green-500' : 'text-zinc-500'}`}>
+            <span
+              className={`text-sm ${isCurrentTrack ? 'text-green-500' : 'text-zinc-500 dark:text-zinc-400'}`}
+            >
               {index + 1}
             </span>
           )}
@@ -209,21 +215,23 @@ const TrackItem = React.memo(
         {/* Track info */}
         <div className="min-w-0 flex-1">
           <p
-            className={`truncate text-sm font-medium ${isCurrentTrack ? 'text-green-500' : 'text-zinc-100'}`}
+            className={`truncate text-sm font-medium ${isCurrentTrack ? 'text-green-500' : 'text-zinc-900 dark:text-zinc-100'}`}
           >
             {track.title}
           </p>
-          <p className="truncate text-xs text-zinc-400">{track.artist}</p>
+          <p className="truncate text-xs text-zinc-500 dark:text-zinc-400">{track.artist}</p>
         </div>
 
         {/* Album */}
         <div className="hidden w-1/4 min-w-0 md:block">
-          <p className="truncate text-sm text-zinc-400">{track.album}</p>
+          <p className="truncate text-sm text-zinc-600 dark:text-zinc-400">{track.album}</p>
         </div>
 
         {/* Duration */}
         <div className="w-12 text-right">
-          <span className="text-sm text-zinc-400">{formatTime(track.duration)}</span>
+          <span className="text-sm text-zinc-600 dark:text-zinc-400">
+            {formatTime(track.duration)}
+          </span>
         </div>
       </div>
     )
@@ -245,9 +253,9 @@ const TrackItem = React.memo(
 function EmptyState(): React.JSX.Element {
   return (
     <div className="flex flex-col items-center justify-center py-16 text-center">
-      <div className="mb-4 flex h-16 w-16 items-center justify-center rounded-full bg-zinc-800">
+      <div className="mb-4 flex h-16 w-16 items-center justify-center rounded-full bg-zinc-100 dark:bg-zinc-800">
         <svg
-          className="h-8 w-8 text-zinc-500"
+          className="h-8 w-8 text-zinc-500 dark:text-zinc-400"
           fill="none"
           viewBox="0 0 24 24"
           stroke="currentColor"
@@ -260,8 +268,8 @@ function EmptyState(): React.JSX.Element {
           />
         </svg>
       </div>
-      <h3 className="mb-2 text-lg font-medium text-zinc-100">没有歌曲</h3>
-      <p className="text-sm text-zinc-400">添加文件夹来导入音乐</p>
+      <h3 className="mb-2 text-lg font-medium text-zinc-900 dark:text-zinc-100">没有歌曲</h3>
+      <p className="text-sm text-zinc-600 dark:text-zinc-400">添加文件夹来导入音乐</p>
     </div>
   )
 }
@@ -335,7 +343,7 @@ export function TrackList({
     <div className="relative">
       {/* Header row */}
       {header || (
-        <div className="mb-2 flex items-center gap-3 border-b border-zinc-800 px-3 py-2 text-xs font-medium uppercase tracking-wider text-zinc-500">
+        <div className="mb-2 flex items-center gap-3 border-b border-zinc-200 px-3 py-2 text-xs font-medium uppercase tracking-wider text-zinc-500 dark:border-zinc-800 dark:text-zinc-500">
           <div className="w-8 text-center">#</div>
           <div className="w-10" /> {/* Album art space */}
           <div className="min-w-0 flex-1">标题</div>

@@ -177,23 +177,26 @@ export function CreatePlaylistDialog({
       aria-labelledby="create-playlist-title"
     >
       <div
-        className="w-full max-w-md rounded-xl border border-zinc-700 bg-zinc-900 shadow-2xl"
+        className="w-full max-w-md rounded-xl border border-zinc-200 bg-white shadow-2xl dark:border-zinc-700 dark:bg-zinc-900"
         onClick={(e) => e.stopPropagation()}
       >
         {/* Header */}
-        <div className="flex items-center justify-between border-b border-zinc-800 px-6 py-4">
+        <div className="flex items-center justify-between border-b border-zinc-200 px-6 py-4 dark:border-zinc-800">
           <div className="flex items-center gap-3">
             <div className="flex h-10 w-10 items-center justify-center rounded-lg bg-gradient-to-br from-purple-600 to-pink-500 text-white">
               <PlaylistIcon />
             </div>
-            <h2 id="create-playlist-title" className="text-lg font-semibold text-zinc-100">
+            <h2
+              id="create-playlist-title"
+              className="text-lg font-semibold text-zinc-900 dark:text-zinc-100"
+            >
               创建播放列表
             </h2>
           </div>
           <button
             onClick={handleClose}
             disabled={isSubmitting}
-            className="flex h-8 w-8 items-center justify-center rounded-md text-zinc-400 transition-colors hover:bg-zinc-800 hover:text-zinc-100 disabled:cursor-not-allowed disabled:opacity-50"
+            className="flex h-8 w-8 items-center justify-center rounded-md text-zinc-500 transition-colors hover:bg-zinc-100 hover:text-zinc-700 disabled:cursor-not-allowed disabled:opacity-50 dark:text-zinc-400 dark:hover:bg-zinc-800 dark:hover:text-zinc-100"
             aria-label="关闭"
           >
             <CloseIcon />
@@ -206,7 +209,7 @@ export function CreatePlaylistDialog({
             <div>
               <label
                 htmlFor="playlist-name"
-                className="mb-2 block text-sm font-medium text-zinc-300"
+                className="mb-2 block text-sm font-medium text-zinc-700 dark:text-zinc-300"
               >
                 播放列表名称
               </label>
@@ -217,10 +220,10 @@ export function CreatePlaylistDialog({
                 value={name}
                 onChange={handleNameChange}
                 disabled={isSubmitting}
-                className={`w-full rounded-lg border bg-zinc-800 px-4 py-3 text-zinc-100 placeholder-zinc-500 transition-colors focus:outline-none disabled:cursor-not-allowed disabled:opacity-50 ${
+                className={`w-full rounded-lg border bg-white px-4 py-3 text-zinc-900 placeholder-zinc-400 transition-colors focus:outline-none disabled:cursor-not-allowed disabled:opacity-50 dark:bg-zinc-800 dark:text-zinc-100 dark:placeholder-zinc-500 ${
                   displayError
                     ? 'border-red-500 focus:border-red-500'
-                    : 'border-zinc-700 focus:border-zinc-500'
+                    : 'border-zinc-300 focus:border-orange-500 dark:border-zinc-700 dark:focus:border-zinc-500'
                 }`}
                 placeholder="输入播放列表名称"
                 maxLength={100}
@@ -229,7 +232,9 @@ export function CreatePlaylistDialog({
               {displayError && <p className="mt-2 text-sm text-red-400">{displayError}</p>}
             </div>
 
-            <p className="text-xs text-zinc-500">创建后，你可以从音乐库中添加歌曲到这个播放列表</p>
+            <p className="text-xs text-zinc-500 dark:text-zinc-500">
+              创建后，你可以从音乐库中添加歌曲到这个播放列表
+            </p>
           </div>
 
           {/* Actions */}
@@ -238,7 +243,7 @@ export function CreatePlaylistDialog({
               type="button"
               onClick={handleClose}
               disabled={isSubmitting}
-              className="rounded-lg px-4 py-2 text-sm font-medium text-zinc-400 transition-colors hover:text-zinc-100 disabled:cursor-not-allowed disabled:opacity-50"
+              className="rounded-lg px-4 py-2 text-sm font-medium text-zinc-600 transition-colors hover:text-zinc-900 disabled:cursor-not-allowed disabled:opacity-50 dark:text-zinc-400 dark:hover:text-zinc-100"
             >
               取消
             </button>

@@ -87,21 +87,21 @@ function FolderItem({
   isScanning
 }: FolderItemProps): React.JSX.Element {
   return (
-    <div className="group flex items-center justify-between rounded-lg border border-zinc-800 bg-zinc-900/50 p-4 transition-colors hover:border-zinc-700 hover:bg-zinc-900">
+    <div className="group flex items-center justify-between rounded-lg border border-zinc-200 bg-white p-4 transition-colors hover:border-zinc-300 hover:bg-zinc-50 dark:border-zinc-800 dark:bg-zinc-900/50 dark:hover:border-zinc-700 dark:hover:bg-zinc-900">
       <div className="flex items-center gap-3">
-        <div className="flex h-10 w-10 items-center justify-center rounded-lg bg-zinc-800 text-zinc-400">
+        <div className="flex h-10 w-10 items-center justify-center rounded-lg bg-zinc-100 text-zinc-500 dark:bg-zinc-800 dark:text-zinc-400">
           <FolderIcon />
         </div>
         <div>
-          <h3 className="font-medium text-zinc-100">{folder.name}</h3>
-          <p className="text-sm text-zinc-500">{folder.trackCount} 首歌曲</p>
+          <h3 className="font-medium text-zinc-900 dark:text-zinc-100">{folder.name}</h3>
+          <p className="text-sm text-zinc-500 dark:text-zinc-400">{folder.trackCount} 首歌曲</p>
         </div>
       </div>
       <div className="flex items-center gap-2 opacity-0 transition-opacity group-hover:opacity-100">
         <button
           onClick={() => onRefresh(folder.id)}
           disabled={isScanning}
-          className="flex h-8 w-8 items-center justify-center rounded-md text-zinc-400 transition-colors hover:bg-zinc-800 hover:text-zinc-100 disabled:cursor-not-allowed disabled:opacity-50"
+          className="flex h-8 w-8 items-center justify-center rounded-md text-zinc-500 transition-colors hover:bg-zinc-100 hover:text-zinc-700 disabled:cursor-not-allowed disabled:opacity-50 dark:text-zinc-400 dark:hover:bg-zinc-800 dark:hover:text-zinc-100"
           title="刷新文件夹"
         >
           <RefreshIcon />
@@ -109,7 +109,7 @@ function FolderItem({
         <button
           onClick={() => onRemove(folder.id)}
           disabled={isScanning}
-          className="flex h-8 w-8 items-center justify-center rounded-md text-zinc-400 transition-colors hover:bg-zinc-800 hover:text-red-400 disabled:cursor-not-allowed disabled:opacity-50"
+          className="flex h-8 w-8 items-center justify-center rounded-md text-zinc-500 transition-colors hover:bg-zinc-100 hover:text-red-600 disabled:cursor-not-allowed disabled:opacity-50 dark:text-zinc-400 dark:hover:bg-zinc-800 dark:hover:text-red-400"
           title="移除文件夹"
         >
           <DeleteIcon />
@@ -125,9 +125,9 @@ function FolderItem({
 function EmptyState({ onAddFolder }: { onAddFolder: () => void }): React.JSX.Element {
   return (
     <div className="flex flex-col items-center justify-center py-16 text-center">
-      <div className="mb-4 flex h-16 w-16 items-center justify-center rounded-full bg-zinc-800">
+      <div className="mb-4 flex h-16 w-16 items-center justify-center rounded-full bg-zinc-100 dark:bg-zinc-800">
         <svg
-          className="h-8 w-8 text-zinc-500"
+          className="h-8 w-8 text-zinc-500 dark:text-zinc-400"
           fill="none"
           viewBox="0 0 24 24"
           stroke="currentColor"
@@ -140,13 +140,13 @@ function EmptyState({ onAddFolder }: { onAddFolder: () => void }): React.JSX.Ele
           />
         </svg>
       </div>
-      <h3 className="mb-2 text-lg font-medium text-zinc-100">音乐库为空</h3>
-      <p className="mb-6 max-w-sm text-sm text-zinc-400">
+      <h3 className="mb-2 text-lg font-medium text-zinc-900 dark:text-zinc-100">音乐库为空</h3>
+      <p className="mb-6 max-w-sm text-sm text-zinc-600 dark:text-zinc-400">
         添加包含音乐文件的文件夹来开始使用。支持 MP3、FLAC、WAV、AAC、OGG 等格式。
       </p>
       <button
         onClick={onAddFolder}
-        className="flex items-center gap-2 rounded-lg bg-zinc-100 px-4 py-2 font-medium text-zinc-900 transition-colors hover:bg-zinc-200"
+        className="flex items-center gap-2 rounded-lg bg-orange-500 px-4 py-2 font-medium text-white transition-colors hover:bg-orange-600"
       >
         <AddFolderIcon />
         添加文件夹
@@ -176,7 +176,7 @@ function AllTracksSection(): React.JSX.Element {
 
   return (
     <div className="space-y-3">
-      <h3 className="text-sm font-medium text-zinc-400">
+      <h3 className="text-sm font-medium text-zinc-600 dark:text-zinc-400">
         所有歌曲 ({displayTracks.length})
         {searchQuery && displayTracks.length !== tracks.length && (
           <span className="ml-2 text-zinc-500">(共 {tracks.length} 首)</span>
@@ -230,13 +230,13 @@ export function LibraryView({ onSelectFolder }: LibraryViewProps): React.JSX.Ele
     <div className="space-y-6">
       {/* Header */}
       <div className="flex items-center justify-between gap-4">
-        <h2 className="text-2xl font-bold text-zinc-100">音乐库</h2>
+        <h2 className="text-2xl font-bold text-zinc-900 dark:text-zinc-100">音乐库</h2>
         <div className="flex items-center gap-3">
           <SearchBar className="w-64" inputRef={searchInputRef ?? undefined} />
           <button
             onClick={handleAddFolder}
             disabled={isScanning}
-            className="flex items-center gap-2 rounded-lg bg-zinc-800 px-4 py-2 text-sm font-medium text-zinc-100 transition-colors hover:bg-zinc-700 disabled:cursor-not-allowed disabled:opacity-50"
+            className="flex items-center gap-2 rounded-lg bg-orange-500 px-4 py-2 text-sm font-medium text-white transition-colors hover:bg-orange-600 disabled:cursor-not-allowed disabled:opacity-50"
           >
             <AddFolderIcon />
             添加文件夹
@@ -246,11 +246,11 @@ export function LibraryView({ onSelectFolder }: LibraryViewProps): React.JSX.Ele
 
       {/* Error message */}
       {error && (
-        <div className="flex items-center justify-between rounded-lg border border-red-900/50 bg-red-900/20 p-4">
-          <p className="text-sm text-red-400">{error}</p>
+        <div className="flex items-center justify-between rounded-lg border border-red-200 bg-red-50 p-4 dark:border-red-900/50 dark:bg-red-900/20">
+          <p className="text-sm text-red-700 dark:text-red-400">{error}</p>
           <button
             onClick={clearError}
-            className="text-sm text-red-400 underline hover:text-red-300"
+            className="text-sm text-red-700 underline hover:text-red-800 dark:text-red-400 dark:hover:text-red-300"
           >
             关闭
           </button>
@@ -273,7 +273,9 @@ export function LibraryView({ onSelectFolder }: LibraryViewProps): React.JSX.Ele
         <div className="space-y-6">
           {/* Folder list */}
           <div className="space-y-3">
-            <h3 className="text-sm font-medium text-zinc-400">文件夹 ({folders.length})</h3>
+            <h3 className="text-sm font-medium text-zinc-600 dark:text-zinc-400">
+              文件夹 ({folders.length})
+            </h3>
             <div className="space-y-2">
               {folders.map((folder) => (
                 <div

@@ -130,7 +130,7 @@ function PlaylistTrackItem({
     <div
       className={`group flex items-center gap-3 rounded-md px-3 py-2 transition-colors ${
         isDragging ? 'opacity-50' : ''
-      } ${isCurrentTrack ? 'bg-zinc-800/80' : 'hover:bg-zinc-800/50'}`}
+      } ${isCurrentTrack ? 'bg-orange-100/80 dark:bg-zinc-800/80' : 'hover:bg-zinc-100 dark:hover:bg-zinc-800/50'}`}
       draggable
       onDragStart={(e) => onDragStart(e, index)}
       onDragOver={(e) => onDragOver(e, index)}
@@ -139,7 +139,7 @@ function PlaylistTrackItem({
       onDoubleClick={onDoubleClick}
     >
       {/* Drag handle */}
-      <div className="cursor-grab text-zinc-600 opacity-0 transition-opacity group-hover:opacity-100 active:cursor-grabbing">
+      <div className="cursor-grab text-zinc-500 dark:text-zinc-600 opacity-0 transition-opacity group-hover:opacity-100 active:cursor-grabbing">
         <DragHandleIcon />
       </div>
 
@@ -148,7 +148,9 @@ function PlaylistTrackItem({
         {isCurrentTrack && isPlaying ? (
           <PlayingIndicator />
         ) : (
-          <span className={`text-sm ${isCurrentTrack ? 'text-green-500' : 'text-zinc-500'}`}>
+          <span
+            className={`text-sm ${isCurrentTrack ? 'text-green-500' : 'text-zinc-500 dark:text-zinc-400'}`}
+          >
             {index + 1}
           </span>
         )}
@@ -165,21 +167,23 @@ function PlaylistTrackItem({
       {/* Track info */}
       <div className="min-w-0 flex-1">
         <p
-          className={`truncate text-sm font-medium ${isCurrentTrack ? 'text-green-500' : 'text-zinc-100'}`}
+          className={`truncate text-sm font-medium ${isCurrentTrack ? 'text-green-500' : 'text-zinc-900 dark:text-zinc-100'}`}
         >
           {track.title}
         </p>
-        <p className="truncate text-xs text-zinc-400">{track.artist}</p>
+        <p className="truncate text-xs text-zinc-500 dark:text-zinc-400">{track.artist}</p>
       </div>
 
       {/* Album */}
       <div className="hidden w-1/4 min-w-0 md:block">
-        <p className="truncate text-sm text-zinc-400">{track.album}</p>
+        <p className="truncate text-sm text-zinc-600 dark:text-zinc-400">{track.album}</p>
       </div>
 
       {/* Duration */}
       <div className="w-12 text-right">
-        <span className="text-sm text-zinc-400">{formatTime(track.duration)}</span>
+        <span className="text-sm text-zinc-600 dark:text-zinc-400">
+          {formatTime(track.duration)}
+        </span>
       </div>
 
       {/* Remove button */}
@@ -188,7 +192,7 @@ function PlaylistTrackItem({
           e.stopPropagation()
           onRemove()
         }}
-        className="flex h-8 w-8 items-center justify-center rounded-md text-zinc-600 opacity-0 transition-all hover:bg-zinc-700 hover:text-red-400 group-hover:opacity-100"
+        className="flex h-8 w-8 items-center justify-center rounded-md text-zinc-500 dark:text-zinc-600 opacity-0 transition-all hover:bg-zinc-100 hover:text-red-600 dark:hover:bg-zinc-700 dark:hover:text-red-400 group-hover:opacity-100"
         title="从播放列表中移除"
       >
         <DeleteIcon />
@@ -203,9 +207,9 @@ function PlaylistTrackItem({
 function EmptyPlaylistState(): React.JSX.Element {
   return (
     <div className="flex flex-col items-center justify-center py-16 text-center">
-      <div className="mb-4 flex h-16 w-16 items-center justify-center rounded-full bg-zinc-800">
+      <div className="mb-4 flex h-16 w-16 items-center justify-center rounded-full bg-zinc-100 dark:bg-zinc-800">
         <svg
-          className="h-8 w-8 text-zinc-500"
+          className="h-8 w-8 text-zinc-500 dark:text-zinc-400"
           fill="none"
           viewBox="0 0 24 24"
           stroke="currentColor"
@@ -218,8 +222,8 @@ function EmptyPlaylistState(): React.JSX.Element {
           />
         </svg>
       </div>
-      <h3 className="mb-2 text-lg font-medium text-zinc-100">播放列表为空</h3>
-      <p className="text-sm text-zinc-400">从音乐库中添加歌曲到这个播放列表</p>
+      <h3 className="mb-2 text-lg font-medium text-zinc-900 dark:text-zinc-100">播放列表为空</h3>
+      <p className="text-sm text-zinc-600 dark:text-zinc-400">从音乐库中添加歌曲到这个播放列表</p>
     </div>
   )
 }
@@ -310,7 +314,7 @@ export function PlaylistDetail({ playlist, onBack }: PlaylistDetailProps): React
       {/* Back button */}
       <button
         onClick={onBack}
-        className="flex items-center gap-2 text-sm text-zinc-400 transition-colors hover:text-zinc-100"
+        className="flex items-center gap-2 text-sm text-zinc-600 transition-colors hover:text-zinc-900 dark:text-zinc-400 dark:hover:text-zinc-100"
       >
         <BackIcon />
         返回播放列表
@@ -325,9 +329,13 @@ export function PlaylistDetail({ playlist, onBack }: PlaylistDetailProps): React
 
         {/* Playlist info */}
         <div className="flex flex-col justify-end py-4">
-          <p className="text-xs font-medium uppercase tracking-wider text-zinc-400">播放列表</p>
-          <h1 className="mb-2 text-4xl font-bold text-zinc-100">{playlist.name}</h1>
-          <p className="text-sm text-zinc-400">
+          <p className="text-xs font-medium uppercase tracking-wider text-zinc-500 dark:text-zinc-400">
+            播放列表
+          </p>
+          <h1 className="mb-2 text-4xl font-bold text-zinc-900 dark:text-zinc-100">
+            {playlist.name}
+          </h1>
+          <p className="text-sm text-zinc-600 dark:text-zinc-400">
             {playlistTracks.length} 首歌曲 · {formatTime(totalDuration)}
           </p>
 
@@ -350,7 +358,7 @@ export function PlaylistDetail({ playlist, onBack }: PlaylistDetailProps): React
       ) : (
         <div>
           {/* Header row */}
-          <div className="mb-2 flex items-center gap-3 border-b border-zinc-800 px-3 py-2 text-xs font-medium uppercase tracking-wider text-zinc-500">
+          <div className="mb-2 flex items-center gap-3 border-b border-zinc-200 px-3 py-2 text-xs font-medium uppercase tracking-wider text-zinc-500 dark:border-zinc-800 dark:text-zinc-500">
             <div className="w-4" /> {/* Drag handle space */}
             <div className="w-8 text-center">#</div>
             <div className="w-10" /> {/* Album art space */}

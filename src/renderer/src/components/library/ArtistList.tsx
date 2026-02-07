@@ -10,8 +10,13 @@ import { LazyImage } from '@renderer/components/common'
  */
 function DefaultArtistAvatar(): React.JSX.Element {
   return (
-    <div className="flex h-12 w-12 items-center justify-center rounded-full bg-zinc-800">
-      <svg className="h-6 w-6 text-zinc-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+    <div className="flex h-12 w-12 items-center justify-center rounded-full bg-zinc-100 dark:bg-zinc-800">
+      <svg
+        className="h-6 w-6 text-zinc-500 dark:text-zinc-600"
+        fill="none"
+        viewBox="0 0 24 24"
+        stroke="currentColor"
+      >
         <path
           strokeLinecap="round"
           strokeLinejoin="round"
@@ -54,7 +59,7 @@ function ArtistItem({ artist, onPlay, onClick }: ArtistItemProps): React.JSX.Ele
 
   return (
     <div
-      className="group flex cursor-pointer items-center gap-4 rounded-lg p-3 transition-colors hover:bg-zinc-800/50"
+      className="group flex cursor-pointer items-center gap-4 rounded-lg p-3 transition-colors hover:bg-zinc-100 dark:hover:bg-zinc-800/50"
       onClick={onClick}
     >
       {/* Artist avatar with lazy loading and fallback */}
@@ -67,8 +72,10 @@ function ArtistItem({ artist, onPlay, onClick }: ArtistItemProps): React.JSX.Ele
 
       {/* Artist info */}
       <div className="min-w-0 flex-1">
-        <h3 className="truncate text-sm font-medium text-zinc-100">{artist.name}</h3>
-        <p className="text-xs text-zinc-400">
+        <h3 className="truncate text-sm font-medium text-zinc-900 dark:text-zinc-100">
+          {artist.name}
+        </h3>
+        <p className="text-xs text-zinc-600 dark:text-zinc-400">
           {artist.albumCount} 张专辑 • {artist.trackCount} 首歌曲
         </p>
       </div>
@@ -91,9 +98,9 @@ function ArtistItem({ artist, onPlay, onClick }: ArtistItemProps): React.JSX.Ele
 function EmptyState(): React.JSX.Element {
   return (
     <div className="flex flex-col items-center justify-center py-16 text-center">
-      <div className="mb-4 flex h-16 w-16 items-center justify-center rounded-full bg-zinc-800">
+      <div className="mb-4 flex h-16 w-16 items-center justify-center rounded-full bg-zinc-100 dark:bg-zinc-800">
         <svg
-          className="h-8 w-8 text-zinc-500"
+          className="h-8 w-8 text-zinc-500 dark:text-zinc-400"
           fill="none"
           viewBox="0 0 24 24"
           stroke="currentColor"
@@ -106,8 +113,8 @@ function EmptyState(): React.JSX.Element {
           />
         </svg>
       </div>
-      <h3 className="mb-2 text-lg font-medium text-zinc-100">没有艺术家</h3>
-      <p className="text-sm text-zinc-400">添加音乐文件夹来查看艺术家</p>
+      <h3 className="mb-2 text-lg font-medium text-zinc-900 dark:text-zinc-100">没有艺术家</h3>
+      <p className="text-sm text-zinc-600 dark:text-zinc-400">添加音乐文件夹来查看艺术家</p>
     </div>
   )
 }
@@ -157,7 +164,9 @@ export function ArtistList({
   return (
     <div className="space-y-4">
       <div className="flex items-center justify-between">
-        <h3 className="text-sm font-medium text-zinc-400">艺术家 ({artists.length})</h3>
+        <h3 className="text-sm font-medium text-zinc-600 dark:text-zinc-400">
+          艺术家 ({artists.length})
+        </h3>
       </div>
 
       <Virtuoso

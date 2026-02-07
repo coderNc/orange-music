@@ -39,7 +39,7 @@ const AlbumCard = React.memo(
 
     return (
       <div
-        className="group cursor-pointer rounded-lg p-3 transition-colors hover:bg-zinc-800/50"
+        className="group cursor-pointer rounded-lg p-3 transition-colors hover:bg-zinc-100 dark:hover:bg-zinc-800/50"
         onClick={onClick}
       >
         {/* Album art with lazy loading */}
@@ -56,12 +56,14 @@ const AlbumCard = React.memo(
         </div>
 
         {/* Album info */}
-        <h3 className="truncate text-sm font-medium text-zinc-100">{album.name}</h3>
-        <p className="truncate text-xs text-zinc-400">
+        <h3 className="truncate text-sm font-medium text-zinc-900 dark:text-zinc-100">
+          {album.name}
+        </h3>
+        <p className="truncate text-xs text-zinc-600 dark:text-zinc-400">
           {album.artist}
           {album.year && <span className="ml-1">• {album.year}</span>}
         </p>
-        <p className="text-xs text-zinc-500">{album.trackCount} 首歌曲</p>
+        <p className="text-xs text-zinc-500 dark:text-zinc-500">{album.trackCount} 首歌曲</p>
       </div>
     )
   },
@@ -82,9 +84,9 @@ const AlbumCard = React.memo(
 function EmptyState(): React.JSX.Element {
   return (
     <div className="flex flex-col items-center justify-center py-16 text-center">
-      <div className="mb-4 flex h-16 w-16 items-center justify-center rounded-full bg-zinc-800">
+      <div className="mb-4 flex h-16 w-16 items-center justify-center rounded-full bg-zinc-100 dark:bg-zinc-800">
         <svg
-          className="h-8 w-8 text-zinc-500"
+          className="h-8 w-8 text-zinc-500 dark:text-zinc-400"
           fill="none"
           viewBox="0 0 24 24"
           stroke="currentColor"
@@ -97,8 +99,8 @@ function EmptyState(): React.JSX.Element {
           />
         </svg>
       </div>
-      <h3 className="mb-2 text-lg font-medium text-zinc-100">没有专辑</h3>
-      <p className="text-sm text-zinc-400">添加音乐文件夹来查看专辑</p>
+      <h3 className="mb-2 text-lg font-medium text-zinc-900 dark:text-zinc-100">没有专辑</h3>
+      <p className="text-sm text-zinc-600 dark:text-zinc-400">添加音乐文件夹来查看专辑</p>
     </div>
   )
 }
@@ -165,7 +167,9 @@ export function AlbumGrid({
   return (
     <div className="space-y-4">
       <div className="flex items-center justify-between">
-        <h3 className="text-sm font-medium text-zinc-400">专辑 ({albums.length})</h3>
+        <h3 className="text-sm font-medium text-zinc-600 dark:text-zinc-400">
+          专辑 ({albums.length})
+        </h3>
       </div>
 
       <Virtuoso

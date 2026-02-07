@@ -105,7 +105,7 @@ export function SearchBar({
     <div className={`relative ${className}`}>
       {/* Search icon */}
       <div className="pointer-events-none absolute inset-y-0 left-0 flex items-center pl-3">
-        <span className="text-zinc-500">
+        <span className="text-zinc-400 dark:text-zinc-500">
           <SearchIcon />
         </span>
       </div>
@@ -118,7 +118,7 @@ export function SearchBar({
         onChange={handleChange}
         onKeyDown={handleKeyDown}
         placeholder={placeholder}
-        className="w-full rounded-lg border border-zinc-800 bg-zinc-900 py-2 pl-10 pr-10 text-sm text-zinc-100 placeholder-zinc-500 transition-colors focus:border-zinc-700 focus:outline-none focus:ring-1 focus:ring-zinc-700"
+        className="w-full rounded-lg border border-zinc-300 bg-white py-2 pl-10 pr-10 text-sm text-zinc-900 placeholder-zinc-400 transition-colors focus:border-orange-500 focus:outline-none focus:ring-1 focus:ring-orange-500/30 dark:border-zinc-800 dark:bg-zinc-900 dark:text-zinc-100 dark:placeholder-zinc-500 dark:focus:border-zinc-700 dark:focus:ring-zinc-700"
         aria-label="搜索"
       />
 
@@ -126,7 +126,7 @@ export function SearchBar({
       {localValue && (
         <button
           onClick={handleClear}
-          className="absolute inset-y-0 right-0 flex items-center pr-3 text-zinc-500 hover:text-zinc-300"
+          className="absolute inset-y-0 right-0 flex items-center pr-3 text-zinc-400 transition-colors hover:text-zinc-600 dark:text-zinc-500 dark:hover:text-zinc-300"
           aria-label="清除搜索"
         >
           <ClearIcon />

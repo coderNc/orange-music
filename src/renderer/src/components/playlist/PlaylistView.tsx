@@ -87,7 +87,7 @@ function PlaylistItem({
 
   return (
     <div
-      className="group flex cursor-pointer items-center justify-between rounded-lg border border-zinc-800 bg-zinc-900/50 p-4 transition-colors hover:border-zinc-700 hover:bg-zinc-900"
+      className="group flex cursor-pointer items-center justify-between rounded-lg border border-zinc-200 bg-white p-4 transition-colors hover:border-zinc-300 hover:bg-zinc-50 dark:border-zinc-800 dark:bg-zinc-900/50 dark:hover:border-zinc-700 dark:hover:bg-zinc-900"
       onClick={() => onSelect(playlist.id)}
     >
       <div className="flex items-center gap-3">
@@ -95,8 +95,8 @@ function PlaylistItem({
           <PlaylistIcon />
         </div>
         <div>
-          <h3 className="font-medium text-zinc-100">{playlist.name}</h3>
-          <p className="text-sm text-zinc-500">{trackCount} 首歌曲</p>
+          <h3 className="font-medium text-zinc-900 dark:text-zinc-100">{playlist.name}</h3>
+          <p className="text-sm text-zinc-500 dark:text-zinc-400">{trackCount} 首歌曲</p>
         </div>
       </div>
       <div className="flex items-center gap-2 opacity-0 transition-opacity group-hover:opacity-100">
@@ -105,7 +105,7 @@ function PlaylistItem({
             e.stopPropagation()
             onRename(playlist.id)
           }}
-          className="flex h-8 w-8 items-center justify-center rounded-md text-zinc-400 transition-colors hover:bg-zinc-800 hover:text-zinc-100"
+          className="flex h-8 w-8 items-center justify-center rounded-md text-zinc-500 transition-colors hover:bg-zinc-100 hover:text-zinc-700 dark:text-zinc-400 dark:hover:bg-zinc-800 dark:hover:text-zinc-100"
           title="重命名播放列表"
         >
           <EditIcon />
@@ -115,7 +115,7 @@ function PlaylistItem({
             e.stopPropagation()
             onDelete(playlist.id)
           }}
-          className="flex h-8 w-8 items-center justify-center rounded-md text-zinc-400 transition-colors hover:bg-zinc-800 hover:text-red-400"
+          className="flex h-8 w-8 items-center justify-center rounded-md text-zinc-500 transition-colors hover:bg-zinc-100 hover:text-red-600 dark:text-zinc-400 dark:hover:bg-zinc-800 dark:hover:text-red-400"
           title="删除播放列表"
         >
           <DeleteIcon />
@@ -131,9 +131,9 @@ function PlaylistItem({
 function EmptyState({ onCreatePlaylist }: { onCreatePlaylist: () => void }): React.JSX.Element {
   return (
     <div className="flex flex-col items-center justify-center py-16 text-center">
-      <div className="mb-4 flex h-16 w-16 items-center justify-center rounded-full bg-zinc-800">
+      <div className="mb-4 flex h-16 w-16 items-center justify-center rounded-full bg-zinc-100 dark:bg-zinc-800">
         <svg
-          className="h-8 w-8 text-zinc-500"
+          className="h-8 w-8 text-zinc-500 dark:text-zinc-400"
           fill="none"
           viewBox="0 0 24 24"
           stroke="currentColor"
@@ -146,8 +146,10 @@ function EmptyState({ onCreatePlaylist }: { onCreatePlaylist: () => void }): Rea
           />
         </svg>
       </div>
-      <h3 className="mb-2 text-lg font-medium text-zinc-100">没有播放列表</h3>
-      <p className="mb-6 max-w-sm text-sm text-zinc-400">创建播放列表来整理你喜欢的音乐</p>
+      <h3 className="mb-2 text-lg font-medium text-zinc-900 dark:text-zinc-100">没有播放列表</h3>
+      <p className="mb-6 max-w-sm text-sm text-zinc-600 dark:text-zinc-400">
+        创建播放列表来整理你喜欢的音乐
+      </p>
       <button
         onClick={onCreatePlaylist}
         className="flex items-center gap-2 rounded-lg bg-zinc-100 px-4 py-2 font-medium text-zinc-900 transition-colors hover:bg-zinc-200"
@@ -234,10 +236,10 @@ export function PlaylistView({ onSelectPlaylist }: PlaylistViewProps): React.JSX
     <div className="space-y-6">
       {/* Header */}
       <div className="flex items-center justify-between gap-4">
-        <h2 className="text-2xl font-bold text-zinc-100">播放列表</h2>
+        <h2 className="text-2xl font-bold text-zinc-900 dark:text-zinc-100">播放列表</h2>
         <button
           onClick={handleCreatePlaylist}
-          className="flex items-center gap-2 rounded-lg bg-zinc-800 px-4 py-2 text-sm font-medium text-zinc-100 transition-colors hover:bg-zinc-700"
+          className="flex items-center gap-2 rounded-lg bg-orange-500 px-4 py-2 text-sm font-medium text-white transition-colors hover:bg-orange-600"
         >
           <AddPlaylistIcon />
           创建播放列表
@@ -246,11 +248,11 @@ export function PlaylistView({ onSelectPlaylist }: PlaylistViewProps): React.JSX
 
       {/* Error message */}
       {error && (
-        <div className="flex items-center justify-between rounded-lg border border-red-900/50 bg-red-900/20 p-4">
-          <p className="text-sm text-red-400">{error}</p>
+        <div className="flex items-center justify-between rounded-lg border border-red-200 bg-red-50 p-4 dark:border-red-900/50 dark:bg-red-900/20">
+          <p className="text-sm text-red-700 dark:text-red-400">{error}</p>
           <button
             onClick={clearError}
-            className="text-sm text-red-400 underline hover:text-red-300"
+            className="text-sm text-red-700 underline hover:text-red-800 dark:text-red-400 dark:hover:text-red-300"
           >
             关闭
           </button>
@@ -260,8 +262,10 @@ export function PlaylistView({ onSelectPlaylist }: PlaylistViewProps): React.JSX
       {/* Rename dialog */}
       {renamingPlaylistId && (
         <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50">
-          <div className="w-full max-w-md rounded-lg border border-zinc-700 bg-zinc-900 p-6">
-            <h3 className="mb-4 text-lg font-medium text-zinc-100">重命名播放列表</h3>
+          <div className="w-full max-w-md rounded-lg border border-zinc-200 bg-white p-6 dark:border-zinc-700 dark:bg-zinc-900">
+            <h3 className="mb-4 text-lg font-medium text-zinc-900 dark:text-zinc-100">
+              重命名播放列表
+            </h3>
             <input
               ref={renameInputRef}
               type="text"
@@ -271,13 +275,13 @@ export function PlaylistView({ onSelectPlaylist }: PlaylistViewProps): React.JSX
                 if (e.key === 'Enter') handleRenameSubmit()
                 if (e.key === 'Escape') handleRenameCancel()
               }}
-              className="mb-4 w-full rounded-lg border border-zinc-700 bg-zinc-800 px-4 py-2 text-zinc-100 placeholder-zinc-500 focus:border-zinc-600 focus:outline-none"
+              className="mb-4 w-full rounded-lg border border-zinc-300 bg-white px-4 py-2 text-zinc-900 placeholder-zinc-400 focus:border-orange-500 focus:outline-none dark:border-zinc-700 dark:bg-zinc-800 dark:text-zinc-100 dark:placeholder-zinc-500 dark:focus:border-zinc-600"
               placeholder="播放列表名称"
             />
             <div className="flex justify-end gap-3">
               <button
                 onClick={handleRenameCancel}
-                className="rounded-lg px-4 py-2 text-sm font-medium text-zinc-400 transition-colors hover:text-zinc-100"
+                className="rounded-lg px-4 py-2 text-sm font-medium text-zinc-600 transition-colors hover:text-zinc-900 dark:text-zinc-400 dark:hover:text-zinc-100"
               >
                 取消
               </button>
@@ -298,7 +302,9 @@ export function PlaylistView({ onSelectPlaylist }: PlaylistViewProps): React.JSX
         <EmptyState onCreatePlaylist={handleCreatePlaylist} />
       ) : (
         <div className="space-y-3">
-          <h3 className="text-sm font-medium text-zinc-400">所有播放列表 ({playlists.length})</h3>
+          <h3 className="text-sm font-medium text-zinc-600 dark:text-zinc-400">
+            所有播放列表 ({playlists.length})
+          </h3>
           <div className="space-y-2">
             {playlists.map((playlist) => (
               <PlaylistItem

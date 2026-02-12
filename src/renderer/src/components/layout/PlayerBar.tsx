@@ -12,6 +12,8 @@ export function PlayerBar(): React.JSX.Element {
   const isPlaying = usePlayerStore((state) => state.isPlaying)
   const lyricsVisible = useUIStore((state) => state.lyricsVisible)
   const toggleLyrics = useUIStore((state) => state.toggleLyrics)
+  const desktopLyricsVisible = useUIStore((state) => state.desktopLyricsVisible)
+  const toggleDesktopLyrics = useUIStore((state) => state.toggleDesktopLyrics)
   const { dominantColor, palette } = useColorExtractor(currentTrack?.coverUrl)
   const { resolvedTheme } = useTheme()
 
@@ -42,7 +44,9 @@ export function PlayerBar(): React.JSX.Element {
         <AudioVisualizer
           isPlaying={isPlaying}
           barCount={54}
-          barColor={resolvedTheme === 'dark' ? 'rgba(249, 115, 22, 0.14)' : 'rgba(249, 115, 22, 0.22)'}
+          barColor={
+            resolvedTheme === 'dark' ? 'rgba(249, 115, 22, 0.14)' : 'rgba(249, 115, 22, 0.22)'
+          }
           className="w-full"
         />
       </div>
@@ -85,6 +89,24 @@ export function PlayerBar(): React.JSX.Element {
               strokeLinejoin="round"
               strokeWidth={2}
               d="M9 19V6l12-3v13M9 19c0 1.105-1.343 2-3 2s-3-.895-3-2 1.343-2 3-2 3 .895 3 2zm12-3c0 1.105-1.343 2-3 2s-3-.895-3-2 1.343-2 3-2 3 .895 3 2zM9 10l12-3"
+            />
+          </svg>
+        </button>
+        <button
+          onClick={toggleDesktopLyrics}
+          className={`interactive-soft focus-ring rounded-xl p-2 transition-colors ${
+            desktopLyricsVisible
+              ? 'bg-orange-100/80 text-orange-700 dark:bg-orange-500/25 dark:text-orange-300'
+              : 'text-zinc-600 hover:bg-zinc-200/60 hover:text-zinc-800 dark:text-zinc-300 dark:hover:bg-zinc-800/70 dark:hover:text-zinc-100'
+          }`}
+          title="桌面歌词"
+        >
+          <svg className="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <path
+              strokeLinecap="round"
+              strokeLinejoin="round"
+              strokeWidth={2}
+              d="M9.75 17L9 20l-1.25 1h8.5L15 20l-.75-3M3 13V5a2 2 0 012-2h14a2 2 0 012 2v8M3 13h18M5 13v2a2 2 0 002 2h10a2 2 0 002-2v-2"
             />
           </svg>
         </button>

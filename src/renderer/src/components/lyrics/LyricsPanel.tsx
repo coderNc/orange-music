@@ -61,9 +61,23 @@ export function LyricsPanel({ className = '' }: LyricsPanelProps): React.JSX.Ele
               data-dim={distance >= 3}
               className="lyric-line text-center"
             >
-              <p className="text-sm text-zinc-600 dark:text-zinc-300">{line.text || '♪'}</p>
+              <p
+                className={`text-base ${
+                  index === currentIndex
+                    ? 'font-semibold text-orange-500 dark:text-orange-400'
+                    : 'text-zinc-600 dark:text-zinc-300'
+                }`}
+              >
+                {line.text || '♪'}
+              </p>
               {line.translatedText && (
-                <p className="mt-1 text-xs text-zinc-500/90 dark:text-zinc-400/90">
+                <p
+                  className={`mt-1 text-sm ${
+                    index === currentIndex
+                      ? 'text-orange-400/90 dark:text-orange-300/90'
+                      : 'text-zinc-500/90 dark:text-zinc-400/90'
+                  }`}
+                >
                   {line.translatedText}
                 </p>
               )}

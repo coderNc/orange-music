@@ -18,6 +18,9 @@ export interface UIState {
   // Lyrics panel
   lyricsVisible: boolean
 
+  // Desktop lyrics window
+  desktopLyricsVisible: boolean
+
   // Theme
   theme: ThemeType
 
@@ -47,6 +50,10 @@ export interface UIActions {
   toggleLyrics: () => void
   setLyricsVisible: (visible: boolean) => void
 
+  // Desktop lyrics window
+  toggleDesktopLyrics: () => void
+  setDesktopLyricsVisible: (visible: boolean) => void
+
   // Theme
   setTheme: (theme: ThemeType) => void
 
@@ -69,6 +76,7 @@ const initialState: UIState = {
   sidebarCollapsed: false,
   queueVisible: false,
   lyricsVisible: false,
+  desktopLyricsVisible: false,
   theme: 'system',
   createPlaylistDialogOpen: false,
   addFolderDialogOpen: false,
@@ -126,6 +134,14 @@ export const useUIStore = create<UIStore>()(
           set({ lyricsVisible: visible })
         },
 
+        toggleDesktopLyrics: () => {
+          set((state) => ({ desktopLyricsVisible: !state.desktopLyricsVisible }))
+        },
+
+        setDesktopLyricsVisible: (visible: boolean) => {
+          set({ desktopLyricsVisible: visible })
+        },
+
         setTheme: (theme: ThemeType) => {
           set({ theme })
         },
@@ -165,6 +181,7 @@ export const useUIStore = create<UIStore>()(
         // Only persist certain fields
         partialize: (state) => ({
           sidebarCollapsed: state.sidebarCollapsed,
+          desktopLyricsVisible: state.desktopLyricsVisible,
           theme: state.theme
         })
       }
@@ -177,6 +194,7 @@ export const selectCurrentView = (state: UIStore): ViewType => state.currentView
 export const selectSidebarCollapsed = (state: UIStore): boolean => state.sidebarCollapsed
 export const selectQueueVisible = (state: UIStore): boolean => state.queueVisible
 export const selectLyricsVisible = (state: UIStore): boolean => state.lyricsVisible
+export const selectDesktopLyricsVisible = (state: UIStore): boolean => state.desktopLyricsVisible
 export const selectTheme = (state: UIStore): ThemeType => state.theme
 export const selectCreatePlaylistDialogOpen = (state: UIStore): boolean =>
   state.createPlaylistDialogOpen

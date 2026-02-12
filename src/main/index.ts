@@ -3,8 +3,9 @@ import { join } from 'path'
 import { electronApp, optimizer, is } from '@electron-toolkit/utils'
 import icon from '../../resources/icon.png?asset'
 import { registerIPCHandlers } from './ipc'
+import { closeDesktopLyricsWindow, registerMainWindow } from './services/desktop-lyrics-window'
 
-function createWindow(): void {
+function createWindow(): BrowserWindow {
   // macOS-specific window options for native vibrancy (frosted glass effect)
   const macOSOptions =
     process.platform === 'darwin'
@@ -49,6 +50,8 @@ function createWindow(): void {
   } else {
     mainWindow.loadFile(join(__dirname, '../renderer/index.html'))
   }
+
+  return mainWindow
 }
 
 // This method will be called when Electron has finished
@@ -68,12 +71,16 @@ app.whenReady().then(() => {
   // Register IPC handlers for main process services
   registerIPCHandlers()
 
-  createWindow()
+  const mainWindow = createWindow()
+  registerMainWindow(mainWindow)
 
   app.on('activate', function () {
     // On macOS it's common to re-create a window in the app when the
     // dock icon is clicked and there are no other windows open.
-    if (BrowserWindow.getAllWindows().length === 0) createWindow()
+    if (BrowserWindow.getAllWindows().length === 0) {
+      const activeWindow = createWindow()
+      registerMainWindow(activeWindow)
+    }
   })
 })
 
@@ -84,6 +91,10 @@ app.on('window-all-closed', () => {
   if (process.platform !== 'darwin') {
     app.quit()
   }
+})
+
+app.on('before-quit', () => {
+  closeDesktopLyricsWindow()
 })
 
 // In this file you can include the rest of your app's specific main process

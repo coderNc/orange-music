@@ -8,7 +8,10 @@ import {
   type AppSettings,
   type PlaybackState,
   type TrackMetadata,
-  type ScanProgressEvent
+  type ScanProgressEvent,
+  type DesktopLyricsPayload,
+  type DesktopLyricsControlAction,
+  type DesktopLyricsSettingsAction
 } from '@shared/types'
 import {
   NETEASE_IPC_CHANNELS,
@@ -94,6 +97,30 @@ const ipcAPI = {
    */
   readLyrics: (audioFilePath: string): Promise<IPCResult<string | null>> => {
     return invokeWithTimeout(IPC_CHANNELS.READ_LYRICS, { audioFilePath })
+  },
+
+  showDesktopLyrics: (): Promise<IPCResult<void>> => {
+    return invokeWithTimeout(IPC_CHANNELS.SHOW_DESKTOP_LYRICS)
+  },
+
+  hideDesktopLyrics: (): Promise<IPCResult<void>> => {
+    return invokeWithTimeout(IPC_CHANNELS.HIDE_DESKTOP_LYRICS)
+  },
+
+  updateDesktopLyrics: (payload: DesktopLyricsPayload): Promise<IPCResult<void>> => {
+    return invokeWithTimeout(IPC_CHANNELS.UPDATE_DESKTOP_LYRICS, { payload })
+  },
+
+  desktopLyricsControl: (action: DesktopLyricsControlAction): Promise<IPCResult<void>> => {
+    return invokeWithTimeout(IPC_CHANNELS.DESKTOP_LYRICS_CONTROL, { action })
+  },
+
+  openDesktopLyricsSettings: (): Promise<IPCResult<void>> => {
+    return invokeWithTimeout(IPC_CHANNELS.OPEN_DESKTOP_LYRICS_SETTINGS)
+  },
+
+  desktopLyricsSettingsAction: (action: DesktopLyricsSettingsAction): Promise<IPCResult<void>> => {
+    return invokeWithTimeout(IPC_CHANNELS.DESKTOP_LYRICS_SETTINGS_ACTION, { action })
   },
 
   // ============================================
@@ -198,6 +225,19 @@ const ipcAPI = {
 
     return () => {
       ipcRenderer.removeListener(IPC_CHANNELS.SCAN_PROGRESS, handler)
+    }
+  },
+
+  onDesktopLyricsControl: (
+    callback: (action: DesktopLyricsControlAction) => void
+  ): (() => void) => {
+    const handler = (_: Electron.IpcRendererEvent, action: DesktopLyricsControlAction): void => {
+      callback(action)
+    }
+    ipcRenderer.on(IPC_CHANNELS.DESKTOP_LYRICS_CONTROL_EVENT, handler)
+
+    return () => {
+      ipcRenderer.removeListener(IPC_CHANNELS.DESKTOP_LYRICS_CONTROL_EVENT, handler)
     }
   },
 

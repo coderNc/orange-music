@@ -72,7 +72,9 @@ describe('IPC Handlers', () => {
   describe('Handler Registration', () => {
     it('should register all IPC handlers', () => {
       const expectedChannels = Object.values(IPC_CHANNELS).filter(
-        (channel) => channel !== IPC_CHANNELS.SCAN_PROGRESS
+        (channel) =>
+          channel !== IPC_CHANNELS.SCAN_PROGRESS &&
+          channel !== IPC_CHANNELS.DESKTOP_LYRICS_CONTROL_EVENT
       )
 
       for (const channel of expectedChannels) {

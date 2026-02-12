@@ -6,7 +6,10 @@ import {
   type Playlist,
   type AppSettings,
   type PlaybackState,
-  type ScanProgressEvent
+  type ScanProgressEvent,
+  type DesktopLyricsPayload,
+  type DesktopLyricsControlAction,
+  type DesktopLyricsSettingsAction
 } from '@shared/types'
 import { NETEASE_IPC_CHANNELS } from '@shared/types/netease'
 import { fileService } from '@main/services/file-service'
@@ -22,6 +25,14 @@ import {
   clearCookie,
   getLoginStatus
 } from '@main/services/netease'
+import {
+  showDesktopLyricsWindow,
+  hideDesktopLyricsWindow,
+  updateDesktopLyrics,
+  handleDesktopLyricsControlAction,
+  openDesktopLyricsSettingsWindow,
+  handleDesktopLyricsSettingsAction
+} from '@main/services/desktop-lyrics-window'
 
 // Default timeout for IPC operations (30 seconds)
 const DEFAULT_TIMEOUT = 30000
@@ -123,6 +134,51 @@ export function registerIPCHandlers(): void {
       return await fileService.readLyrics(args.audioFilePath)
     }, 'READ_LYRICS_ERROR')
   })
+
+  ipcMain.handle(IPC_CHANNELS.SHOW_DESKTOP_LYRICS, async () => {
+    return handleAsync(async () => {
+      showDesktopLyricsWindow()
+    }, 'SHOW_DESKTOP_LYRICS_ERROR')
+  })
+
+  ipcMain.handle(IPC_CHANNELS.HIDE_DESKTOP_LYRICS, async () => {
+    return handleAsync(async () => {
+      hideDesktopLyricsWindow()
+    }, 'HIDE_DESKTOP_LYRICS_ERROR')
+  })
+
+  ipcMain.handle(
+    IPC_CHANNELS.UPDATE_DESKTOP_LYRICS,
+    async (_, args: { payload: DesktopLyricsPayload }) => {
+      return handleAsync(async () => {
+        updateDesktopLyrics(args.payload)
+      }, 'UPDATE_DESKTOP_LYRICS_ERROR')
+    }
+  )
+
+  ipcMain.handle(
+    IPC_CHANNELS.DESKTOP_LYRICS_CONTROL,
+    async (_, args: { action: DesktopLyricsControlAction }) => {
+      return handleAsync(async () => {
+        handleDesktopLyricsControlAction(args.action)
+      }, 'DESKTOP_LYRICS_CONTROL_ERROR')
+    }
+  )
+
+  ipcMain.handle(IPC_CHANNELS.OPEN_DESKTOP_LYRICS_SETTINGS, async () => {
+    return handleAsync(async () => {
+      openDesktopLyricsSettingsWindow()
+    }, 'OPEN_DESKTOP_LYRICS_SETTINGS_ERROR')
+  })
+
+  ipcMain.handle(
+    IPC_CHANNELS.DESKTOP_LYRICS_SETTINGS_ACTION,
+    async (_, args: { action: DesktopLyricsSettingsAction }) => {
+      return handleAsync(async () => {
+        handleDesktopLyricsSettingsAction(args.action)
+      }, 'DESKTOP_LYRICS_SETTINGS_ACTION_ERROR')
+    }
+  )
 
   // ============================================
   // Metadata Operations

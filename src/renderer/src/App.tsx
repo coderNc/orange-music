@@ -11,7 +11,8 @@ import {
   useAppInitialization,
   useAppStateSync,
   useErrorNotifications,
-  useTheme
+  useTheme,
+  useDesktopLyricsSync
 } from '@renderer/hooks'
 import { SearchInputRefContext, useSearchInputRef } from '@renderer/contexts'
 
@@ -62,7 +63,7 @@ function MainContent(): React.JSX.Element {
           <div className="glass-panel space-y-3 rounded-2xl p-6">
             <h2 className="text-2xl font-bold text-zinc-900 dark:text-zinc-100">播放队列</h2>
             <p className="text-zinc-600 dark:text-zinc-300">
-              队列已集成在右侧面板中，可通过侧边栏"播放队列"打开。
+              队列已集成在右侧面板中，可通过侧边栏“播放队列”打开。
             </p>
           </div>
         )
@@ -85,6 +86,7 @@ function App(): React.JSX.Element {
   useKeyboardShortcuts({ searchInputRef })
   useErrorNotifications()
   useTheme()
+  useDesktopLyricsSync()
 
   if (isLoading) {
     return <LoadingScreen message={progress.message} error={error} />

@@ -6,7 +6,9 @@ import type {
   AppSettings,
   PlaybackState,
   TrackMetadata,
-  ScanProgressEvent
+  ScanProgressEvent,
+  DesktopLyricsPayload,
+  DesktopLyricsControlAction
 } from '@shared/types'
 import type {
   NeteasePlaylistResult,
@@ -92,6 +94,26 @@ export async function pathExists(path: string): Promise<boolean> {
 export async function readLyrics(audioFilePath: string): Promise<string | null> {
   const result = await getAPI().readLyrics(audioFilePath)
   return unwrapResult(result)
+}
+
+export async function showDesktopLyrics(): Promise<void> {
+  const result = await getAPI().showDesktopLyrics()
+  unwrapResult(result)
+}
+
+export async function hideDesktopLyrics(): Promise<void> {
+  const result = await getAPI().hideDesktopLyrics()
+  unwrapResult(result)
+}
+
+export async function updateDesktopLyrics(payload: DesktopLyricsPayload): Promise<void> {
+  const result = await getAPI().updateDesktopLyrics(payload)
+  unwrapResult(result)
+}
+
+export async function desktopLyricsControl(action: DesktopLyricsControlAction): Promise<void> {
+  const result = await getAPI().desktopLyricsControl(action)
+  unwrapResult(result)
 }
 
 // ============================================
@@ -219,6 +241,12 @@ export function onScanProgress(callback: (progress: ScanProgressEvent) => void):
   return getAPI().onScanProgress(callback)
 }
 
+export function onDesktopLyricsControl(
+  callback: (action: DesktopLyricsControlAction) => void
+): () => void {
+  return getAPI().onDesktopLyricsControl(callback)
+}
+
 export async function parseNeteasePlaylist(input: string): Promise<NeteasePlaylistResult> {
   const result = await getAPI().parseNeteasePlaylist(input)
   return unwrapResult(result)
@@ -286,6 +314,10 @@ export interface IPCService {
   scanFolder: typeof scanFolder
   pathExists: typeof pathExists
   readLyrics: typeof readLyrics
+  showDesktopLyrics: typeof showDesktopLyrics
+  hideDesktopLyrics: typeof hideDesktopLyrics
+  updateDesktopLyrics: typeof updateDesktopLyrics
+  desktopLyricsControl: typeof desktopLyricsControl
 
   parseFile: typeof parseFile
   parseFiles: typeof parseFiles
@@ -301,6 +333,7 @@ export interface IPCService {
   loadPlaybackState: typeof loadPlaybackState
 
   onScanProgress: typeof onScanProgress
+  onDesktopLyricsControl: typeof onDesktopLyricsControl
 
   parseNeteasePlaylist: typeof parseNeteasePlaylist
   getNeteaseSongUrl: typeof getNeteaseSongUrl
@@ -317,6 +350,10 @@ export const ipcService: IPCService = {
   scanFolder,
   pathExists,
   readLyrics,
+  showDesktopLyrics,
+  hideDesktopLyrics,
+  updateDesktopLyrics,
+  desktopLyricsControl,
   parseFile,
   parseFiles,
   extractCover,
@@ -329,6 +366,7 @@ export const ipcService: IPCService = {
   savePlaybackState,
   loadPlaybackState,
   onScanProgress,
+  onDesktopLyricsControl,
   parseNeteasePlaylist,
   getNeteaseSongUrl,
   getNeteaseSongUrls,

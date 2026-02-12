@@ -94,6 +94,15 @@ export const IPC_CHANNELS = {
   PATH_EXISTS: 'file:path-exists',
   READ_LYRICS: 'file:read-lyrics',
 
+  // Desktop lyrics
+  SHOW_DESKTOP_LYRICS: 'desktop-lyrics:show',
+  HIDE_DESKTOP_LYRICS: 'desktop-lyrics:hide',
+  UPDATE_DESKTOP_LYRICS: 'desktop-lyrics:update',
+  DESKTOP_LYRICS_CONTROL: 'desktop-lyrics:control',
+  DESKTOP_LYRICS_CONTROL_EVENT: 'desktop-lyrics:control-event',
+  OPEN_DESKTOP_LYRICS_SETTINGS: 'desktop-lyrics:open-settings',
+  DESKTOP_LYRICS_SETTINGS_ACTION: 'desktop-lyrics:settings-action',
+
   // Metadata operations
   PARSE_FILE: 'metadata:parse-file',
   PARSE_FILES: 'metadata:parse-files',
@@ -123,6 +132,12 @@ export interface IPCRequestMap {
   [IPC_CHANNELS.SCAN_FOLDER]: { folderPath: string }
   [IPC_CHANNELS.PATH_EXISTS]: { path: string }
   [IPC_CHANNELS.READ_LYRICS]: { audioFilePath: string }
+  [IPC_CHANNELS.SHOW_DESKTOP_LYRICS]: void
+  [IPC_CHANNELS.HIDE_DESKTOP_LYRICS]: void
+  [IPC_CHANNELS.UPDATE_DESKTOP_LYRICS]: { payload: DesktopLyricsPayload }
+  [IPC_CHANNELS.DESKTOP_LYRICS_CONTROL]: { action: DesktopLyricsControlAction }
+  [IPC_CHANNELS.OPEN_DESKTOP_LYRICS_SETTINGS]: void
+  [IPC_CHANNELS.DESKTOP_LYRICS_SETTINGS_ACTION]: { action: DesktopLyricsSettingsAction }
   [IPC_CHANNELS.PARSE_FILE]: { filePath: string; folderId: string }
   [IPC_CHANNELS.PARSE_FILES]: { filePaths: string[]; folderId: string }
   [IPC_CHANNELS.EXTRACT_COVER]: { filePath: string }
@@ -141,6 +156,12 @@ export interface IPCResponseMap {
   [IPC_CHANNELS.SCAN_FOLDER]: string[]
   [IPC_CHANNELS.PATH_EXISTS]: boolean
   [IPC_CHANNELS.READ_LYRICS]: string | null
+  [IPC_CHANNELS.SHOW_DESKTOP_LYRICS]: void
+  [IPC_CHANNELS.HIDE_DESKTOP_LYRICS]: void
+  [IPC_CHANNELS.UPDATE_DESKTOP_LYRICS]: void
+  [IPC_CHANNELS.DESKTOP_LYRICS_CONTROL]: void
+  [IPC_CHANNELS.OPEN_DESKTOP_LYRICS_SETTINGS]: void
+  [IPC_CHANNELS.DESKTOP_LYRICS_SETTINGS_ACTION]: void
   [IPC_CHANNELS.PARSE_FILE]: TrackMetadata
   [IPC_CHANNELS.PARSE_FILES]: TrackMetadata[]
   [IPC_CHANNELS.EXTRACT_COVER]: string | null
@@ -176,3 +197,20 @@ export interface ScanProgressEvent {
   total: number
   currentFile?: string
 }
+
+export interface DesktopLyricsPayload {
+  currentLine: string
+  nextLine?: string
+  trackTitle?: string
+  artist?: string
+  isPlaying: boolean
+}
+
+export type DesktopLyricsControlAction = 'play-pause' | 'previous' | 'next' | 'close-desktop-lyrics'
+
+export type DesktopLyricsSettingsAction =
+  | 'font-increase'
+  | 'font-decrease'
+  | 'toggle-line-mode'
+  | 'next-color'
+  | 'reset'
